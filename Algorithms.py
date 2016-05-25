@@ -70,7 +70,6 @@ class SPN:
 		return self.pq.pop(index)
 				
 			
-<<<<<<< HEAD
 # Shortest remaining time - retrieve item with shortest process time
 # 							except preempt if incoming process is shorter
 class SRT:
@@ -90,12 +89,12 @@ class SRT:
 			i = i + 1
 			proccontblk = proctable.GetPCB(pid)
 			# Record the first CPU burst time and pid on first iteration
-			if i = 1:
+			if i == 1:
 				mintime = proccontblk.tburst[1]
 				minpid = pid
 			# On other pid's only replace minimum time and assoc pid if that
 			# process has a smaller brust time than the current smallest
-			if not i = 1 and proccontblk.tburst[1] < mintime
+			if not i == 1 and proccontblk.tburst[1] < mintime
 				mintime = proccontblk.tburst[1]
 				minpid = pid
 		# Pop the pid stored in minpid
@@ -122,17 +121,14 @@ class HRRN:
 			proccontblk = proctable.GetPCB(pid)
 			respratio = 1 + proccontblk.twait/sum(proccontblk.cpuburst)
 			# Record the first CPU burst time and pid on first iteration
-			if i = 1:
+			if i == 1:
 				maxrr = respratio
 				maxpid = pid
 			# On other pid's only replace minimum time and assoc pid if that
 			# process has a smaller brust time than the current smallest
-			if not i = 1 and respratio > maxrr
+			if not i == 1 and respratio > maxrr
 				maxrr = respratio
 				maxpid = pid
 		# Pop the pid stored in minpid
 		index = self.pq.index(maxpid)
 		return self.pq.pop(index)
-=======
-		
->>>>>>> 11baaadd74d4e20478f9a045785c03f9029280a0
