@@ -10,16 +10,18 @@ class PCB:
 	tarr = 0
 	twait = 0
 	qlvl = 1 # May remove later
-	tburst = []
+	cpuburst = []
+	ioburst = []
 	
-	def __init__(self, processid, currstate, timearr, timewait, queuelvl, timeburst)
+	def __init__(self, processid, currstate, timearr, timewait, queuelvl, cputimeburst, iotimeburst)
 		# Constructor
 		self.pid = processid
 		self.state = currstate
 		self.tarr = timearr
 		self.twait = timewait
 		self.qlvl = queuelvl
-		self.tburst = timeburst
+		self.cpuburst = cputimeburst
+		self.ioburst = iotimeburst
 	
 	def LoadProcess(self, filelocation)
 		# Assume file is csv
@@ -34,11 +36,12 @@ class ProcTbl:
 	
 	def __init__(self):
 		self.pid = []
+		self.pcb = []
 	
 	# Create process control block with pid, arrival time, and burst time array
 	# pid array and pcb arrays will match indexes
-	def Insert(self, procid, currtime, timeburst):
-		proc = PCB(procid,1,currtime,0,1,timeburst)
+	def Insert(self, procid, currtime, cputimeburst, iotimeburst):
+		proc = PCB(procid,1,currtime,0,1,cputimeburst,iotimeburst)
 		self.pid.append(procid)
 		self.pcb.append(proc)
 	
