@@ -7,10 +7,14 @@
 # Really though, I don't know what I am doing...
 import Processes
 
+global currentlyrunning = 0
+
+# We will probably need some IO wait queue
+
 # First come first serve - retrieve item from the top of the queue
 class FCFS:
 	pq = [] # Process Queue
-	pt = [] # Process Table
+	pt = ProcTbl() # Process Table
 	
 	def __init__(self, procqueue, proctbl):
 		self.pq = procqueue
@@ -22,13 +26,18 @@ class FCFS:
 	def NextPID(self):
 		return self.pq.pop(1)
 		
-	def Run(self)
-		runtime = pt.
+	def Run(self):
+		index = self.pq.index(currentlyrunning)
+		# Retrieve the cpu burst time
+		runtime = pt.pcb(index).cpuburst.pop(1)
+		currentlyrunning = self.NextPID()
+		return runtime
+
 # Round robin - retrieve item from top of queue, process for a time, 
 # then return to queue unless finished
 class RR:
 	pq = [] # Process Queue
-	pt = [] # Process Table
+	pt = ProcTbl() # Process Table
 	tq = 1 # Time Quantum
 	
 	def __init__(self, procqueue, proctbl, timeq):
@@ -41,14 +50,26 @@ class RR:
 		
 	def NextPID(self, currentlyrunning):
 		# Pop the next PID in the list
-		# only insert if currently running proc hasn't finished
-		self.Insert(currentlyrunning)
 		return self.pq.pop(1)
+		
+	def Run(self):
+		index = self.pq.index(currentlyrunning)
+		# Retrieve the cpu burst time
+		remainingtime = pt.pcb(index).cpuburst(1)
+		if remainingtime < tq:
+			remainingtime = pt.pcb(index).cpuburst.pop(1)
+			runtime = remainingtime
+		else:
+			runtime = tq
+			pt.pcb(index).cpuburst(1) = pt.pcb(index).cpuburst(1) - tq
+			self.Insert(currentlyrunning)
+		currentlyrunning = self.NextPID()
+		return runtime
 		
 # Shortest process next - retrieve item with shortest process time
 class SPN:
 	pq = [] # Process Queue
-	pt = [] # Process Table
+	pt = ProcTbl() # Process Table
 	
 	def __init__(self, procqueue, proctbl):
 		self.pq = procqueue
@@ -58,12 +79,12 @@ class SPN:
 		self.pq.append(pid)
 		
 	# Find minimum process time needed
-	def NextPID(self, proctable):
+	def NextPID(self):
 		i = 0
 		# Loop through process queue
 		for pid in pq:
 			i = i + 1
-			proccontblk = proctable.GetPCB(pid)
+			proccontblk = self.pt.GetPCB(pid)
 			# Record the first CPU burst time and pid on first iteration
 			if i == 1:
 				mintime = proccontblk.tburst[1]
@@ -76,13 +97,20 @@ class SPN:
 		# Pop the pid stored in minpid
 		index = self.pq.index(minpid)
 		return self.pq.pop(index)
+		
+	def Run(self):
+		index = self.pq.index(currentlyrunning)
+		# Retrieve the cpu burst time
+		runtime = pt.pcb(index).cpuburst.pop(1)
+		currentlyrunning = self.NextPID()
+		return runtime
 				
 			
 # Shortest remaining time - retrieve item with shortest process time
 # 							except preempt if incoming process is shorter
 class SRT:
 	pq = [] # Process queue
-	pt = [] # Process Table
+	pt = ProcTbl() # Process Table
 	
 	def __init__(self, procqueue, proctbl):
 		self.pq = procqueue
@@ -92,12 +120,12 @@ class SRT:
 		self.pq.append(pid)
 		
 	# Find minimum process time needed
-	def NextPID(self, proctable):
+	def NextPID(self):
 		i = 0
 		# Loop through process queue
 		for pid in pq:
 			i = i + 1
-			proccontblk = proctable.GetPCB(pid)
+			proccontblk = self.pt.GetPCB(pid)
 			# Record the first CPU burst time and pid on first iteration
 			if i == 1:
 				mintime = proccontblk.tburst[1]
@@ -111,11 +139,19 @@ class SRT:
 		index = self.pq.index(minpid)
 		return self.pq.pop(index)
 		
+	def Run(self):
+		index = self.pq.index(currentlyrunning)
+		# Retrieve the cpu burst time
+		runtime = pt.pcb(index).cpuburst.pop(1)
+
+		currentlyrunning = self.NextPID()
+		return runtime
+		
 # Highest response ratio next - calculate response ratio for each process and 
 #								choose the one with the highest
 class HRRN:
 	pq = [] # Process queue
-	pt = [] # Process Table
+	pt = ProcTbl() # Process Table
 	
 	def __init__(self, procqueue, proctbl):
 		self.pq = procqueue
@@ -125,12 +161,12 @@ class HRRN:
 		self.pq.append(pid)
 		
 	# Find highest response ratio
-	def NextPID(self, proctable):
+	def NextPID(self):
 		i = 0
 		# Loop through process queue
 		for pid in pq:
 			i = i + 1
-			proccontblk = proctable.GetPCB(pid)
+			proccontblk = self.pt.GetPCB(pid)
 			respratio = 1 + proccontblk.twait/sum(proccontblk.cpuburst)
 			# Record the first CPU burst time and pid on first iteration
 			if i == 1:
@@ -144,3 +180,10 @@ class HRRN:
 		# Pop the pid stored in minpid
 		index = self.pq.index(maxpid)
 		return self.pq.pop(index)
+		
+	def Run(self):
+		index = self.pq.index(currentlyrunning)
+		# Retrieve the cpu burst time
+		runtime = pt.pcb(index).cpuburst.pop(1)
+		currentlyrunning = self.NextPID()
+		return runtime
