@@ -13,11 +13,7 @@ class PCB:
 	cpuburst = []
 	ioburst = []
 	
-<<<<<<< HEAD
 	def __init__(self, processid, currstate, timearr, timewait, queuelvl, cputimeburst, iotimeburst)
-=======
-	def __init__(self, processid, currstate, timearr, timewait, queuelvl, timeburst):
->>>>>>> 11baaadd74d4e20478f9a045785c03f9029280a0
 		# Constructor
 		self.pid = processid
 		self.state = currstate
