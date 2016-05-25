@@ -12,7 +12,7 @@ class PCB:
 	qlvl = 1 # May remove later
 	tburst = []
 	
-	def __init__(self, processid, currstate, timearr, timewait, queuelvl, timeburst)
+	def __init__(self, processid, currstate, timearr, timewait, queuelvl, timeburst):
 		# Constructor
 		self.pid = processid
 		self.state = currstate
@@ -21,7 +21,7 @@ class PCB:
 		self.qlvl = queuelvl
 		self.tburst = timeburst
 	
-	def LoadProcess(self, filelocation)
+	def LoadProcess(self, filelocation):
 		# Assume file is csv
 		with open(filelocation) as csvfile:
 			procreader = csv.reader(csvfile, delimiter=',')
