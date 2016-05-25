@@ -5,7 +5,7 @@
 # For now, I am doing the basic idea of each. 
 # These classes will evolve as the project comes together
 # Really though, I don't know what I am doing...
-import Processes.py
+import Processes
 
 # First come first serve - retrieve item from the top of the queue
 class FCFS:
@@ -59,12 +59,12 @@ class SPN:
 			i = i + 1
 			proccontblk = proctable.GetPCB(pid)
 			# Record the first CPU burst time and pid on first iteration
-			if i = 1:
+			if i == 1:
 				mintime = proccontblk.tburst[1]
 				minpid = pid
 			# On other pid's only replace minimum time and assoc pid if that
 			# process has a smaller brust time than the current smallest
-			if not i = 1 and proccontblk.tburst[1] < mintime
+			if not i == 1 and proccontblk.tburst[1] < mintime:
 				mintime = proccontblk.tburst[1]
 				minpid = pid
 		# Pop the pid stored in minpid
