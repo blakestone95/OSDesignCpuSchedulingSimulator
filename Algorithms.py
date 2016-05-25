@@ -10,9 +10,11 @@ import Processes
 # First come first serve - retrieve item from the top of the queue
 class FCFS:
 	pq = [] # Process Queue
+	pt = [] # Process Table
 	
-	def __init__(self, procqueue):
+	def __init__(self, procqueue, proctbl):
 		self.pq = procqueue
+		self.pt = proctbl
 	
 	def Insert(self, pid):
 		self.pq.append(pid)
@@ -20,14 +22,18 @@ class FCFS:
 	def NextPID(self):
 		return self.pq.pop(1)
 		
+	def Run(self)
+		runtime = pt.
 # Round robin - retrieve item from top of queue, process for a time, 
 # then return to queue unless finished
 class RR:
 	pq = [] # Process Queue
+	pt = [] # Process Table
 	tq = 1 # Time Quantum
 	
-	def __init__(self, procqueue, timeq):
+	def __init__(self, procqueue, proctbl, timeq):
 		self.pq = procqueue
+		self.pt = proctbl
 		self.tq = timeq
 		
 	def Insert(self, pid):
@@ -42,9 +48,11 @@ class RR:
 # Shortest process next - retrieve item with shortest process time
 class SPN:
 	pq = [] # Process Queue
+	pt = [] # Process Table
 	
-	def __init__(self, procqueue):
+	def __init__(self, procqueue, proctbl):
 		self.pq = procqueue
+		self.pt = proctbl
 		
 	def Insert(self, pid):
 		self.pq.append(pid)
@@ -74,9 +82,11 @@ class SPN:
 # 							except preempt if incoming process is shorter
 class SRT:
 	pq = [] # Process queue
+	pt = [] # Process Table
 	
-	def __init__(self, procqueue):
+	def __init__(self, procqueue, proctbl):
 		self.pq = procqueue
+		self.pt = proctbl
 		
 	def Insert(self, pid):
 		self.pq.append(pid)
@@ -105,9 +115,11 @@ class SRT:
 #								choose the one with the highest
 class HRRN:
 	pq = [] # Process queue
+	pt = [] # Process Table
 	
-	def __init__(self, procqueue):
+	def __init__(self, procqueue, proctbl):
 		self.pq = procqueue
+		self.pt = proctbl
 		
 	def Insert(self, pid):
 		self.pq.append(pid)
