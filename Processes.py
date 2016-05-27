@@ -4,44 +4,66 @@
 # Create process table and PCB
 import csv
 
+# Process Control Block - Store information associated with processes
 class PCB:
 	pid = 1
 	state = 1 # 1 -> ready; 2 -> running; 3 -> blocked; 4 -> finished
 	tarr = 0
 	twait = 0
 	qlvl = 1 # May remove later
-	cpuburst = []
-	ioburst = []
+	tburst = []
 	
-	def __init__(self, processid, currstate, timearr, timewait, queuelvl, cputimeburst, iotimeburst)
-		# Constructor
+	# Constructor needs only process id and tburst array, other args are optional
+	def __init__(self, processid, currstate = None, timearr = None, timewait = None, queuelvl = None, timeburst):
+		
 		self.pid = processid
-		self.state = currstate
-		self.tarr = timearr
-		self.twait = timewait
-		self.qlvl = queuelvl
-		self.cpuburst = cputimeburst
-		self.ioburst = iotimeburst
+		
+		if currstate is None:
+			self.state = 1
+		else:
+			self.state = currstate
+			
+		if timarr is None:
+			self.tarr = 0
+		else:
+			self.tarr = timearr
+			
+		if timewait is None:
+			self.twait = 0
+		else:
+			self.twait = timewait
+			
+		if queuelvl is None:
+			self.qlvl = 1
+		else:
+			self.qlvl = queuelvl
+			
+		self.tburst = timeburst
 	
+	# Load Process info into PCB (This will likely be removed later... Overlord's job)
 	def LoadProcess(self, filelocation):
 		# Assume file is csv
 		with open(filelocation) as csvfile:
 			procreader = csv.reader(csvfile, delimiter=',')
 			
 		
-	
+# Process Table - Store current processes and their associated PCB
 class ProcTbl:
 	pid = []
 	pcb = []
 	
+	# Construct PT to empty lists
 	def __init__(self):
 		self.pid = []
 		self.pcb = []
 	
 	# Create process control block with pid, arrival time, and burst time array
 	# pid array and pcb arrays will match indexes
-	def Insert(self, procid, currtime, cputimeburst, iotimeburst):
-		proc = PCB(procid,1,currtime,0,1,cputimeburst,iotimeburst)
+	def Insert(self, procid, currtime = None, timeburst):
+		if currtime is None:
+			proc = PCB (procid, timeburst)
+		else:
+			proc = PCB(procid,currtime,timeburst)
 		self.pid.append(procid)
 		self.pcb.append(proc)
 	
@@ -51,6 +73,7 @@ class ProcTbl:
 		self.pid.pop(i)
 		self.pcb.pop(i)
 		
+	# Retrieve the PCB associated with a particular process id
 	def GetPCB(self, procid):
 		i = self.pid.index(procid)
 		return self.pcb[i]

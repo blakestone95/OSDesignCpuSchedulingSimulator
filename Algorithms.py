@@ -6,6 +6,7 @@
 # These classes will evolve as the project comes together
 # Really though, I don't know what I am doing...
 import Processes
+import Queue
 
 global currentlyrunning = 0
 
@@ -13,7 +14,7 @@ global currentlyrunning = 0
 
 # First come first serve - retrieve item from the top of the queue
 class FCFS:
-	pq = [] # Process Queue
+	pq = [] #queue.Queue() # Process Queue
 	pt = ProcTbl() # Process Table
 	
 	def __init__(self, procqueue, proctbl):
@@ -24,12 +25,13 @@ class FCFS:
 		self.pq.append(pid)
 		
 	def NextPID(self):
-		return self.pq.pop(1)
+	#return pq.get()
+		return self.pq.pop(0)
 		
 	def Run(self):
 		index = self.pq.index(currentlyrunning)
 		# Retrieve the cpu burst time
-		runtime = pt.pcb(index).cpuburst.pop(1)
+		runtime = pt.pcb(index).tburst.pop(0)
 		currentlyrunning = self.NextPID()
 		return runtime
 
@@ -50,18 +52,18 @@ class RR:
 		
 	def NextPID(self, currentlyrunning):
 		# Pop the next PID in the list
-		return self.pq.pop(1)
+		return self.pq.pop(0)
 		
 	def Run(self):
 		index = self.pq.index(currentlyrunning)
 		# Retrieve the cpu burst time
-		remainingtime = pt.pcb(index).cpuburst(1)
+		remainingtime = pt.pcb(index).tburst[0]
 		if remainingtime < tq:
-			remainingtime = pt.pcb(index).cpuburst.pop(1)
+			remainingtime = pt.pcb(index).tburst.pop(0)
 			runtime = remainingtime
 		else:
 			runtime = tq
-			pt.pcb(index).cpuburst(1) = pt.pcb(index).cpuburst(1) - tq
+			pt.pcb(index).tburst[0] = pt.pcb(index).tburst[0] - tq
 			self.Insert(currentlyrunning)
 		currentlyrunning = self.NextPID()
 		return runtime
@@ -87,12 +89,12 @@ class SPN:
 			proccontblk = self.pt.GetPCB(pid)
 			# Record the first CPU burst time and pid on first iteration
 			if i == 1:
-				mintime = proccontblk.tburst[1]
+				mintime = proccontblk.tburst[0]
 				minpid = pid
 			# On other pid's only replace minimum time and assoc pid if that
 			# process has a smaller brust time than the current smallest
-			if not i == 1 and proccontblk.tburst[1] < mintime:
-				mintime = proccontblk.tburst[1]
+			if not i == 1 and proccontblk.tburst[0] < mintime:
+				mintime = proccontblk.tburst[0]
 				minpid = pid
 		# Pop the pid stored in minpid
 		index = self.pq.index(minpid)
@@ -101,7 +103,7 @@ class SPN:
 	def Run(self):
 		index = self.pq.index(currentlyrunning)
 		# Retrieve the cpu burst time
-		runtime = pt.pcb(index).cpuburst.pop(1)
+		runtime = pt.pcb(index).tburst.pop(0)
 		currentlyrunning = self.NextPID()
 		return runtime
 				
@@ -128,12 +130,12 @@ class SRT:
 			proccontblk = self.pt.GetPCB(pid)
 			# Record the first CPU burst time and pid on first iteration
 			if i == 1:
-				mintime = proccontblk.tburst[1]
+				mintime = proccontblk.tburst[0]
 				minpid = pid
 			# On other pid's only replace minimum time and assoc pid if that
 			# process has a smaller brust time than the current smallest
-			if not i == 1 and proccontblk.tburst[1] < mintime
-				mintime = proccontblk.tburst[1]
+			if not i == 1 and proccontblk.tburst[0] < mintime
+				mintime = proccontblk.tburst[0]
 				minpid = pid
 		# Pop the pid stored in minpid
 		index = self.pq.index(minpid)
@@ -142,7 +144,7 @@ class SRT:
 	def Run(self):
 		index = self.pq.index(currentlyrunning)
 		# Retrieve the cpu burst time
-		runtime = pt.pcb(index).cpuburst.pop(1)
+		runtime = pt.pcb(index).tburst.pop(0)
 
 		currentlyrunning = self.NextPID()
 		return runtime
@@ -163,11 +165,15 @@ class HRRN:
 	# Find highest response ratio
 	def NextPID(self):
 		i = 0
+		j = 0
+		sumtime = 0
 		# Loop through process queue
 		for pid in pq:
 			i = i + 1
 			proccontblk = self.pt.GetPCB(pid)
-			respratio = 1 + proccontblk.twait/sum(proccontblk.cpuburst)
+			for j in range(0,ceil(len(proccontblk.tburst)/2):
+				sumtime = sumtime + proccontblk.tburst(2*j)
+			respratio = 1 + proccontblk.twait/sumtime
 			# Record the first CPU burst time and pid on first iteration
 			if i == 1:
 				maxrr = respratio
@@ -184,6 +190,6 @@ class HRRN:
 	def Run(self):
 		index = self.pq.index(currentlyrunning)
 		# Retrieve the cpu burst time
-		runtime = pt.pcb(index).cpuburst.pop(1)
+		runtime = pt.pcb(index).tburst.pop(0)
 		currentlyrunning = self.NextPID()
 		return runtime
