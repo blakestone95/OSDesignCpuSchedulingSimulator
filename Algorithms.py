@@ -8,8 +8,6 @@
 import Processes
 import Queue
 
-global currentlyrunning = 0
-
 # We will probably need some IO wait queue
 
 # First come first serve - retrieve item from the top of the queue
@@ -28,7 +26,7 @@ class FCFS:
 	#return pq.get()
 		return self.pq.pop(0)
 		
-	def Run(self):
+	def Run(self, currentlyrunning):
 		index = self.pq.index(currentlyrunning)
 		# Retrieve the cpu burst time
 		runtime = pt.pcb(index).tburst.pop(0)
@@ -54,7 +52,7 @@ class RR:
 		# Pop the next PID in the list
 		return self.pq.pop(0)
 		
-	def Run(self):
+	def Run(self,currentlyrunning):
 		index = self.pq.index(currentlyrunning)
 		# Retrieve the cpu burst time
 		remainingtime = pt.pcb(index).tburst[0]
@@ -100,7 +98,7 @@ class SPN:
 		index = self.pq.index(minpid)
 		return self.pq.pop(index)
 		
-	def Run(self):
+	def Run(self,currentlyrunning):
 		index = self.pq.index(currentlyrunning)
 		# Retrieve the cpu burst time
 		runtime = pt.pcb(index).tburst.pop(0)
@@ -141,7 +139,7 @@ class SRT:
 		index = self.pq.index(minpid)
 		return self.pq.pop(index)
 		
-	def Run(self):
+	def Run(self,currentlyrunning):
 		index = self.pq.index(currentlyrunning)
 		# Retrieve the cpu burst time
 		runtime = pt.pcb(index).tburst.pop(0)
