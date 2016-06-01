@@ -39,12 +39,6 @@ class PCB:
 			self.qlvl = queuelvl
 			
 		self.tburst = timeburst
-	
-	# Load Process info into PCB (This will likely be removed later... Overlord's job)
-	def LoadProcess(self, filelocation):
-		# Assume file is csv
-		with open(filelocation) as csvfile:
-			procreader = csv.reader(csvfile, delimiter=',')
 			
 		
 # Process Table - Store current processes and their associated PCB

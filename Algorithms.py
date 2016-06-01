@@ -1,10 +1,7 @@
 # Algorithms.py
 # Author: Blake Sawyer
 # 
-# Create classes for CPU scheduling algorithms
-# For now, I am doing the basic idea of each. 
-# These classes will evolve as the project comes together
-# Really though, I don't know what I am doing...
+# Classes for CPU scheduling algorithms
 import Processes
 import Queue
 
@@ -14,23 +11,26 @@ import Queue
 class FCFS:
 	pq = [] #queue.Queue() # Process Queue
 	pt = ProcTbl() # Process Table
-	
+
+	# Constructor
 	def __init__(self, procqueue, proctbl):
 		self.pq = procqueue
 		self.pt = proctbl
-	
+
+	# Insert process into queue
 	def Insert(self, pid):
 		self.pq.append(pid)
-		
+
+	# Get next pid to be run and remove it from the queue
 	def NextPID(self):
 	#return pq.get()
 		return self.pq.pop(0)
-		
+
+	# Return first instance of cpu burst time from the PCB of current process
 	def Run(self, currentlyrunning):
 		index = self.pq.index(currentlyrunning)
 		# Retrieve the cpu burst time
 		runtime = pt.pcb(index).tburst.pop(0)
-		currentlyrunning = self.NextPID()
 		return runtime
 
 # Round robin - retrieve item from top of queue, process for a time, 
@@ -40,18 +40,22 @@ class RR:
 	pt = ProcTbl() # Process Table
 	tq = 1 # Time Quantum
 	
+	# Constructor
 	def __init__(self, procqueue, proctbl, timeq):
 		self.pq = procqueue
 		self.pt = proctbl
 		self.tq = timeq
 		
+	# Insert process into queue
 	def Insert(self, pid):
 		self.pq.append(pid)
-		
+			
+	# Get next pid to be run and remove it from the queue
 	def NextPID(self, currentlyrunning):
 		# Pop the next PID in the list
 		return self.pq.pop(0)
 		
+	# Return first instance of cpu burst time from the PCB of current process
 	def Run(self,currentlyrunning):
 		index = self.pq.index(currentlyrunning)
 		# Retrieve the cpu burst time
@@ -63,7 +67,6 @@ class RR:
 			runtime = tq
 			pt.pcb(index).tburst[0] = pt.pcb(index).tburst[0] - tq
 			self.Insert(currentlyrunning)
-		currentlyrunning = self.NextPID()
 		return runtime
 		
 # Shortest process next - retrieve item with shortest process time
@@ -71,13 +74,16 @@ class SPN:
 	pq = [] # Process Queue
 	pt = ProcTbl() # Process Table
 	
+	# Constructor
 	def __init__(self, procqueue, proctbl):
 		self.pq = procqueue
 		self.pt = proctbl
 		
+	# Insert process into queue
 	def Insert(self, pid):
 		self.pq.append(pid)
 		
+	# Get next pid to be run and remove it from the queue
 	# Find minimum process time needed
 	def NextPID(self):
 		i = 0
@@ -98,11 +104,11 @@ class SPN:
 		index = self.pq.index(minpid)
 		return self.pq.pop(index)
 		
+	# Return first instance of cpu burst time from the PCB of current process
 	def Run(self,currentlyrunning):
 		index = self.pq.index(currentlyrunning)
 		# Retrieve the cpu burst time
 		runtime = pt.pcb(index).tburst.pop(0)
-		currentlyrunning = self.NextPID()
 		return runtime
 				
 			
@@ -112,13 +118,16 @@ class SRT:
 	pq = [] # Process queue
 	pt = ProcTbl() # Process Table
 	
+	# Constructor
 	def __init__(self, procqueue, proctbl):
 		self.pq = procqueue
 		self.pt = proctbl
 		
+	# Insert process into queue
 	def Insert(self, pid):
 		self.pq.append(pid)
 		
+	# Get next pid to be run and remove it from the queue
 	# Find minimum process time needed
 	def NextPID(self):
 		i = 0
@@ -139,12 +148,11 @@ class SRT:
 		index = self.pq.index(minpid)
 		return self.pq.pop(index)
 		
+	# Return first instance of cpu burst time from the PCB of current process
 	def Run(self,currentlyrunning):
 		index = self.pq.index(currentlyrunning)
 		# Retrieve the cpu burst time
 		runtime = pt.pcb(index).tburst.pop(0)
-
-		currentlyrunning = self.NextPID()
 		return runtime
 		
 # Highest response ratio next - calculate response ratio for each process and 
@@ -153,13 +161,16 @@ class HRRN:
 	pq = [] # Process queue
 	pt = ProcTbl() # Process Table
 	
+	# Constructor
 	def __init__(self, procqueue, proctbl):
 		self.pq = procqueue
 		self.pt = proctbl
 		
+	# Insert process into queue
 	def Insert(self, pid):
 		self.pq.append(pid)
 		
+	# Get next pid to be run and remove it from the queue
 	# Find highest response ratio
 	def NextPID(self):
 		i = 0
@@ -185,9 +196,9 @@ class HRRN:
 		index = self.pq.index(maxpid)
 		return self.pq.pop(index)
 		
+	# Return first instance of cpu burst time from the PCB of current process
 	def Run(self):
 		index = self.pq.index(currentlyrunning)
 		# Retrieve the cpu burst time
 		runtime = pt.pcb(index).tburst.pop(0)
-		currentlyrunning = self.NextPID()
 		return runtime
