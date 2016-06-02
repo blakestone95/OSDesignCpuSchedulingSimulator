@@ -15,8 +15,11 @@ def Overlord():
         ui = Ui_Form()
         ui.setupUi(Form)
         Form.show()
-        sys.exit(app.exec_())
 	
 	
 	# Return variables from GUI
 	
+
+
+	
+        sys.exit(app.exec_())

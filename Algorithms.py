@@ -3,7 +3,7 @@
 # 
 # Classes for CPU scheduling algorithms
 import Processes
-import Queue
+#import Queue
 
 # We will probably need some IO wait queue
 
@@ -141,7 +141,7 @@ class SRT:
 				minpid = pid
 			# On other pid's only replace minimum time and assoc pid if that
 			# process has a smaller brust time than the current smallest
-			if not i == 1 and proccontblk.tburst[0] < mintime
+			if (not i == 1) and (proccontblk.tburst[0] < mintime):
 				mintime = proccontblk.tburst[0]
 				minpid = pid
 		# Pop the pid stored in minpid
@@ -180,7 +180,7 @@ class HRRN:
 		for pid in pq:
 			i = i + 1
 			proccontblk = self.pt.GetPCB(pid)
-			for j in range(0,ceil(len(proccontblk.tburst)/2):
+			for j in range(0,ceil(len(proccontblk.tburst)/2)):
 				sumtime = sumtime + proccontblk.tburst(2*j)
 			respratio = 1 + proccontblk.twait/sumtime
 			# Record the first CPU burst time and pid on first iteration
@@ -189,7 +189,7 @@ class HRRN:
 				maxpid = pid
 			# On other pid's only replace minimum time and assoc pid if that
 			# process has a smaller brust time than the current smallest
-			if not i == 1 and respratio > maxrr
+			if (not i == 1) and (respratio > maxrr):
 				maxrr = respratio
 				maxpid = pid
 		# Pop the pid stored in minpid

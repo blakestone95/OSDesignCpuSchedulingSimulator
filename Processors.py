@@ -35,7 +35,7 @@ class CPU:
             self.tactive += 1       #Increment active time
             self.processtime += 1   #Increment burst time and check if it is the final value
             if (self.processtime == PCB.tburst[self.processslot]):
-                if self.processslot/2 < len(PCB.tburst)-1)/2:    #Move to the next burst slot if it exists
+                if self.processslot/2 < (len(PCB.tburst)-1)/2:    #Move to the next burst slot if it exists
                     self.processslot += 2
                     state = "blocked"       #Processor goes into blocked state since next slot is IO
         else:

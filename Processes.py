@@ -14,7 +14,7 @@ class PCB:
 	tburst = []
 	
 	# Constructor needs only process id and tburst array, other args are optional
-	def __init__(self, processid, currstate = None, timearr = None, timewait = None, queuelvl = None, timeburst):
+	def __init__(self, processid, timeburst, currstate = None, timearr = None, timewait = None, queuelvl = None):
 		
 		self.pid = processid
 		
@@ -53,11 +53,11 @@ class ProcTbl:
 	
 	# Create process control block with pid, arrival time, and burst time array
 	# pid array and pcb arrays will match indexes
-	def Insert(self, procid, currtime = None, timeburst):
+	def Insert(self, procid, timeburst, currtime = None):
 		if currtime is None:
-			proc = PCB (procid, timeburst)
+			proc = PCB(procid,timeburst)
 		else:
-			proc = PCB(procid,currtime,timeburst)
+			proc = PCB(procid,timeburst,timearr:=currtime)
 		self.pid.append(procid)
 		self.pcb.append(proc)
 	
