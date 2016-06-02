@@ -96,8 +96,9 @@ class Ui_Form(object):
     def start_btn_clicked(self):
         with open(self.processInput.toPlainText().strip("file:///")) as f:
             reader = csv.reader(f)
-            for row in reader:
-                self.output1.append(str(row))
+            #for row in reader:
+                #self.output1.append(str(row))
+            return reader
     def stop_btn_clicked(self):
         self.output1.append("stop clicked")
 

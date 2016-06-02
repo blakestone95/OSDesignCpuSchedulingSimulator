@@ -10,6 +10,13 @@ import Processors
 # correct my syntax if it's wrong...
 def Overlord():
 	# Start GUI
+        app = QtWidgets.QApplication(sys.argv)
+        Form = QtWidgets.QWidget()
+        ui = Ui_Form()
+        ui.setupUi(Form)
+        Form.show()
+        sys.exit(app.exec_())
+	
 	
 	# Return variables from GUI
 	
