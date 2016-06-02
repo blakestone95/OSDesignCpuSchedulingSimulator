@@ -8,18 +8,9 @@ import cpuScheduler
 import Processors
 
 # correct my syntax if it's wrong...
-def Overlord():
-	# Start GUI
-        app = QtWidgets.QApplication(sys.argv)
-        Form = QtWidgets.QWidget()
-        ui = Ui_Form()
-        ui.setupUi(Form)
-        Form.show()
-	
-	
-	# Return variables from GUI
-	
-
-
-	
-        sys.exit(app.exec_())
+def Overlord(datafilereader):
+    # Instead of Overlord starting everything, Overlord will be called by GUI 
+    # and then do the rest of the simulation
+    for row in datafilereader:
+        print(str(row))
+    #print("Hello World!")

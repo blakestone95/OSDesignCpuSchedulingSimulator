@@ -10,7 +10,7 @@ import Processes
 # First come first serve - retrieve item from the top of the queue
 class FCFS:
 	pq = [] #queue.Queue() # Process Queue
-	pt = ProcTbl() # Process Table
+	pt = None #ProcTbl() # Process Table
 
 	# Constructor
 	def __init__(self, procqueue, proctbl):
@@ -37,7 +37,7 @@ class FCFS:
 # then return to queue unless finished
 class RR:
 	pq = [] # Process Queue
-	pt = ProcTbl() # Process Table
+	pt = None #ProcTbl() # Process Table
 	tq = 1 # Time Quantum
 	
 	# Constructor
@@ -72,7 +72,7 @@ class RR:
 # Shortest process next - retrieve item with shortest process time
 class SPN:
 	pq = [] # Process Queue
-	pt = ProcTbl() # Process Table
+	pt = None #ProcTbl() # Process Table
 	
 	# Constructor
 	def __init__(self, procqueue, proctbl):
@@ -116,7 +116,7 @@ class SPN:
 # 							except preempt if incoming process is shorter
 class SRT:
 	pq = [] # Process queue
-	pt = ProcTbl() # Process Table
+	pt = None #ProcTbl() # Process Table
 	
 	# Constructor
 	def __init__(self, procqueue, proctbl):
@@ -159,7 +159,7 @@ class SRT:
 #								choose the one with the highest
 class HRRN:
 	pq = [] # Process queue
-	pt = ProcTbl() # Process Table
+	pt = None #ProcTbl() # Process Table
 	
 	# Constructor
 	def __init__(self, procqueue, proctbl):

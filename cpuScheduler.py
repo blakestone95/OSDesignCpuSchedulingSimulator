@@ -98,7 +98,8 @@ class Ui_Form(object):
             reader = csv.reader(f)
             #for row in reader:
                 #self.output1.append(str(row))
-            return reader
+        Overlord(reader)
+    
     def stop_btn_clicked(self):
         self.output1.append("stop clicked")
 

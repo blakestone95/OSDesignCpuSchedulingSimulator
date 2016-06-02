@@ -57,7 +57,7 @@ class ProcTbl:
 		if currtime is None:
 			proc = PCB(procid,timeburst)
 		else:
-			proc = PCB(procid,timeburst,timearr:=currtime)
+			proc = PCB(procid,timeburst,timearr=currtime)
 		self.pid.append(procid)
 		self.pcb.append(proc)
 	
