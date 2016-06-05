@@ -12,16 +12,23 @@ import csv
 
 currenttime = 0
 
-# correct my syntax if it's wrong...
 def Overlord(datafilereader):
     # Instead of Overlord starting everything, Overlord will be called by GUI 
     # and then do the rest of the simulation
 
-    # Load processes into Process Table
-
+    # Initializataions
     masterpt = Processes.ProcTbl()
     done = False
     ioqueue = []
+    queues = []
+    # Hard code algorithms for testing purposes
+    queues.append(Algorithms.RR(masterpt,1))
+    queues.append(Algorithms.RR(masterpt,10))
+    queues.append(Algorithms.SPN(masterpt))
+    queues.append(Algorithms.FCFS(masterpt))
+
+#------------------------------------------------------------------------------#
+    # Load processes into Process Table
     
     for row in datafilereader:
         
@@ -41,6 +48,13 @@ def Overlord(datafilereader):
                 # Give processor a process to do
                 processor.execute(pid,runtime)
 
+
+
+        
+
+
+
+#------------------------------------------------------------------------------#
         # collect all times for comparison
         times = []
         # Get time from now to time of next arriving process
@@ -59,21 +73,40 @@ def Overlord(datafilereader):
         for processor in processors:
             if not processor.getstate() == "idle":
                 finishedpid = processor.decrementtime(subtime)
-                finishedpcb = masterpt.GetPCB(finishedpid)
-                if not finishedpid == 0 and not len(finishedpcb.tburst) == 0:
-                    iopcb = masterpt.GetPCB(finishedpid)
-                    iopcb.state = 3
-                    ioqueue.append([finishedpid, iopcb.tburst.pop(0)])
+                # processor.decrementtime returns 0 for non-finished processing
+                if not finishedpid == 0:
+                    # Geting pcb of finished process
+                    finishedpcb = masterpt.GetPCB(finishedpid)
+                    if not len(finishedpcb.tburst) == 0:
+                        # If not finished, block the process and send it to the io q
+                        finishedpcb.state = 3
+                        ioqueue.append([finishedpid, finishedpcb.tburst.pop(0)])
+                    elif:
+                        # Set process to finished
+                        finishedpcb.state = 4
+                        finishedpcb.tfinish = currenttime + subtime
+                        # Remove finished process from queue
+                        for q in queues:
+                            q.pq.remove(finishedpid)
 
-        # Get next 
+        # Get next incoming process
         if subtime == tnextprocess and not incomingpid is None:
+            queues[0].Insert(incomingpid)
             incomingpid = masterpt.NextPID(incomingpid)
+            
+        # Set wait time
+
+#------------------------------------------------------------------------------#
+        # Service queues
+        
+
+
+        # end of simulation conditions
+        if incomingpid is None:
+            done = True
             
         # Increment current time
         currenttime += subtime
-        
-        if incomingpid is None:
-            done = True
     
     
 processInputLocation = 'C:\\Users\\Blake\\Documents\\GitHub\\SchedulerForDayz\\randomdata.csv'

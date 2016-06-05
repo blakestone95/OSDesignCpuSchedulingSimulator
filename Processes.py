@@ -10,6 +10,7 @@ class PCB:
 	state = 1 # 1 -> ready; 2 -> running; 3 -> blocked; 4 -> finished
 	tarr = 0
 	twait = 0
+	tfinish = 0
 	qlvl = 1 # May remove later
 	tburst = []
 	

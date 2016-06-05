@@ -13,8 +13,7 @@ class FCFS:
 	pt = Processes.ProcTbl() # Process Table
 
 	# Constructor
-	def __init__(self, procqueue, proctbl):
-		self.pq = procqueue
+	def __init__(self, proctbl):
 		self.pt = proctbl
 
 	# Insert process into queue
@@ -41,8 +40,7 @@ class RR:
 	tq = 1 # Time Quantum
 	
 	# Constructor
-	def __init__(self, procqueue, proctbl, timeq):
-		self.pq = procqueue
+	def __init__(self, proctbl, timeq):
 		self.pt = proctbl
 		self.tq = timeq
 		
@@ -75,8 +73,7 @@ class SPN:
 	pt = Processes.ProcTbl() # Process Table
 	
 	# Constructor
-	def __init__(self, procqueue, proctbl):
-		self.pq = procqueue
+	def __init__(self, proctbl):
 		self.pt = proctbl
 		
 	# Insert process into queue
@@ -119,8 +116,7 @@ class SRT:
 	pt = Processes.ProcTbl() # Process Table
 	
 	# Constructor
-	def __init__(self, procqueue, proctbl):
-		self.pq = procqueue
+	def __init__(self, proctbl):
 		self.pt = proctbl
 		
 	# Insert process into queue
@@ -162,8 +158,7 @@ class HRRN:
 	pt = Processes.ProcTbl() # Process Table
 	
 	# Constructor
-	def __init__(self, procqueue, proctbl):
-		self.pq = procqueue
+	def __init__(self, proctbl):
 		self.pt = proctbl
 		
 	# Insert process into queue
