@@ -66,6 +66,13 @@ class ProcTbl:
 		i = self.pid.index(procid)
 		self.pid.pop(i)
 		self.pcb.pop(i)
+
+	def NextPID(self, procid):
+                i = self.pid.index(procid)
+                if i == len(self.pid):
+                        return None
+                elif:
+                        return self.pid[i+1]
 		
 	# Retrieve the PCB associated with a particular process id
 	def GetPCB(self, procid):
