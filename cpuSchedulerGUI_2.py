@@ -8,6 +8,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 import csv
+import Overlord
 
 class Ui_Form(object):
     def setupUi(self, Form):
@@ -177,9 +178,10 @@ class Ui_Form(object):
         processInputLocation = processInputLocation.replace('file:///', '')
         with open(processInputLocation) as f:
             reader = csv.reader(f)
-            for row in reader:
-                self.output1.append(str(row))
-                print(type(row))
+            #for row in reader:
+                #self.output1.append(str(row))
+                #print(type(row))
+            Overlord.Overlord(reader)
     def stop_btn_clicked(self):
         self.output1.append("stop clicked")
 

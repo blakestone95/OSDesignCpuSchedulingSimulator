@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # Overlord
 # Author: Blake Sawyer, Robert Berglund, Daniel Schiefer
 # 
@@ -6,6 +8,7 @@ import Processes
 import Algorithms
 import cpuScheduler
 import Processors
+import csv
 
 currenttime = 0
 
@@ -13,10 +16,19 @@ currenttime = 0
 def Overlord(datafilereader):
     # Instead of Overlord starting everything, Overlord will be called by GUI 
     # and then do the rest of the simulation
-    for row in datafilereader:
-        print(str(row))
-    #print("Hello World!")
 
+    # Load processes into Process Table
+
+    masterpc = Processes.ProcTbl()
+    
+    for row in datafilereader:
+        
+        burst = []
+        for i in range(2,len(row)):
+            burst.append(row[i])
+        masterpc.Insert(row[0],burst,row[1])
+        
+'''
     for processor in processors:
         if processor.getstate() == "idle":
             #Give something to do
@@ -35,5 +47,9 @@ def Overlord(datafilereader):
     #Need to decrement current time
     for processor in processors:
         processor.decrementtime(subtime)
-    currenttime += subtime
+    currenttime += subtime'''
     
+processInputLocation = 'C:\\Users\\Blake\\Documents\\GitHub\\SchedulerForDayz\\randomdata.csv'
+with open(processInputLocation) as f:
+        datafilereader = csv.reader(f)
+        Overlord(datafilereader)
