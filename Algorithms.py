@@ -6,15 +6,14 @@ import Processes
 
 # First come first serve - retrieve item from the top of the queue
 class FCFS:
-        pq = [] # Process Queue
-        pt = Processes.ProcTbl() # Process Table
         preempt = False # Is the algorithm preemptive?
-        tmax = 200 # Max time between flushes
-        tflush = 0 # Accumulated time since last flush
 
         # Constructor
         def __init__(self, proctbl):
                 self.pt = proctbl
+                self.pq = [] # Process Queue
+                self.tmax = 200 # Max time between flushes
+                self.tflush = 0 # Accumulated time since last flush
 
         # InsertPID process into queue
         def InsertPID(self, pid):
@@ -39,12 +38,19 @@ class FCFS:
                 self.tflush += runtime
                 # Flush top 10 processes from queue if particular time elapsed
                 # OK to be over flush time
-                if self.tflush > self.tmax:
+                if self.tflush >= self.tmax:
+                        self.tflush = 0
                         tenprocesses = []
-                        for a in range(0,9):
-                                tenprocesses.append(self.pq[a])
-                                self.pq.pop(a)
-                        return tenprocesses
+                        if len(self.pq) > 10:
+                                for a in range(0,10):
+                                        tenprocesses.append(self.pq[0])
+                                        self.pq.pop(0)
+                                return tenprocesses
+                        else:
+                                for a in range(0,len(self.pq)):
+                                        tenprocesses.append(self.pq[0])
+                                        self.pq.pop(0)
+                                return tenprocesses
                 else:
                         return None
                                 
@@ -53,23 +59,21 @@ class FCFS:
 # Round robin - retrieve item from top of queue, process for a time, 
 # then return to queue unless finished
 class RR:
-        pq = [] # Process Queue
-        pt = Processes.ProcTbl() # Process Table
         preempt = True # Is the algorithm preemptive?
-        lastpid = 0 # Store the last pid that was returned from NextPID
-        tq = 1 # Time Quantum
-        tmax = 50 # Max time between flushes
-        tflush = 0 # Accumulated time since last flush
 
         # Constructor
         def __init__(self, proctbl, timeq):
                 self.pt = proctbl
                 self.tq = timeq
                 # only flush queue if 20 processed have been serviced
-                self.tmax = timeq*20
+                self.tmax = timeq*20 # Max time between flushes
+                self.tflush = 0 # Accumulated time since last flush
+                self.pq = [] # Process Queue
+                self.lastpid = 0 # Store the last pid that was returned from NextPID                self.tflush = 0 # Accumulated time since last flush
                 
         # InsertPID process into queue
         def InsertPID(self, pid):
+                print("Insert " + str(pid) + " into RR w// tq " + str(self.tq))
                 self.pq.append(pid)
 
         # Remove process from queue
@@ -90,7 +94,10 @@ class RR:
                 if currentlyrunning == 0:
                         self.lastpid = self.pq[0]
                         return self.lastpid
-                index = self.pq.index(currentlyrunning)
+                try:
+                        index = self.pq.index(currentlyrunning)
+                except ValueError:
+                        return None
                 # Return self if not needing replacement
                 if runtime < self.tq:
                         self.lastpid = self.pq[index]
@@ -101,7 +108,11 @@ class RR:
                         # Get first non-running process
                         while not pcb.state == 1:
                                 index += 1
-                                pcb = self.pt.GetPCB(self.pq[i])
+                                try:
+                                        pcb = self.pt.GetPCB(self.pq[index])
+                                except IndexError:
+                                        index = 0
+                                        break
                         self.lastpid = self.pq[index]
                         return self.lastpid
 
@@ -109,26 +120,34 @@ class RR:
         def Flush(self, runtime):
                 self.tflush += runtime
                 # Flush top 10 processes from queue if particular time elapsed
-                if self.tflush > self.tmax:
+                if self.tflush >= self.tmax:
+                        self.tflush = 0
+                        self.lastpid = 0
                         tenprocesses = []
-                        for a in range(0,9):
-                                tenprocesses.append(self.pq[a])
-                                self.pq.pop(a)
-                        return tenprocesses
+                        if len(self.pq) > 10:
+                                for a in range(0,10):
+                                        tenprocesses.append(self.pq[0])
+                                        self.pq.pop(0)
+                                return tenprocesses
+                        else:
+                                for a in range(0,len(self.pq)):
+                                        tenprocesses.append(self.pq[0])
+                                        self.pq.pop(0)
+                                return tenprocesses
                 else:
                         return None
 		
 # Shortest process next - retrieve item with shortest process time
 class SPN:
-        pq = [] # Process Queue
-        pt = Processes.ProcTbl() # Process Table
         preempt = False # Is the algorithm preemptive?
-        tmax = 200 # Max time between flushes
-        tflush = 0 # Accumulated time since last flush
 
         # Constructor
         def __init__(self, proctbl):
                 self.pt = proctbl
+                self.pq = [] # Process Queue
+
+                self.tmax = 200 # Max time between flushes
+                self.tflush = 0 # Accumulated time since last flush
                 
         # InsertPID process into queue
         def InsertPID(self, pid):
@@ -142,10 +161,12 @@ class SPN:
         # Find minimum process time needed
         def NextPID(self):
                 i = 0
+                minpid = 0
                 # Loop through process queue
                 for pid in self.pq:
                         i += 1
                         pcb = self.pt.GetPCB(pid)
+                        print("PIDS",pid,pcb.state)
                         # Choose processes that are ready
                         if pcb.state == 1:
                                 # Record the first CPU burst time and pid on first iteration
@@ -166,12 +187,19 @@ class SPN:
                 self.tflush += runtime
                 # Flush top 10 processes from queue if particular time elapsed
                 # OK to be over flush time
-                if self.tflush > self.tmax:
+                if self.tflush >= self.tmax:
+                        self.tflush = 0
                         tenprocesses = []
-                        for a in range(0,9):
-                                tenprocesses.append(self.pq[a])
-                                self.pq.pop(a)
-                        return tenprocesses
+                        if len(self.pq) > 10:
+                                for a in range(0,10):
+                                        tenprocesses.append(self.pq[0])
+                                        self.pq.pop(0)
+                                return tenprocesses
+                        else:
+                                for a in range(0,len(self.pq)):
+                                        tenprocesses.append(self.pq[0])
+                                        self.pq.pop(0)
+                                return tenprocesses
                 else:
                         return None
 				
@@ -179,15 +207,14 @@ class SPN:
 # Shortest remaining time - retrieve item with shortest process time
 # 							except preempt if incoming process is shorter
 class SRT:
-        pq = [] # Process queue
-        pt = Processes.ProcTbl() # Process Table
         preempt = True # Is the algorithm preemptive?
-        tmax = 200 # Max time between flushes
-        tflush = 0 # Accumulated time since last flush
 
         # Constructor
         def __init__(self, proctbl):
                 self.pt = proctbl
+                self.pq = [] # Process Queue
+                self.tmax = 200 # Max time between flushes
+                self.tflush = 0 # Accumulated time since last flush
                 
         # InsertPID process into queue
         def InsertPID(self, pid):
@@ -201,6 +228,7 @@ class SRT:
         # Find minimum process time needed
         def NextPID(self):
                 i = 0
+                minpid = 0
                 # Loop through process queue
                 for pid in self.pq:
                         i = i + 1
@@ -225,27 +253,33 @@ class SRT:
                 self.tflush += runtime
                 # Flush top 10 processes from queue if particular time elapsed
                 # OK to be over flush time
-                if self.tflush > self.tmax:
+                if self.tflush >= self.tmax:
+                        self.tflush = 0
                         tenprocesses = []
-                        for a in range(0,9):
-                                tenprocesses.append(self.pq[a])
-                                self.pq.pop(a)
-                        return tenprocesses
+                        if len(self.pq) > 10:
+                                for a in range(0,10):
+                                        tenprocesses.append(self.pq[0])
+                                        self.pq.pop(0)
+                                return tenprocesses
+                        else:
+                                for a in range(0,len(self.pq)):
+                                        tenprocesses.append(self.pq[0])
+                                        self.pq.pop(0)
+                                return tenprocesses
                 else:
                         return None
 		
 # Highest response ratio next - calculate response ratio for each process and 
 #								choose the one with the highest
 class HRRN:
-        pq = [] # Process queue
-        pt = Processes.ProcTbl() # Process Table
         preempt = False # Is the algorithm preemptive?
-        tmax = 200 # Max time between flushes
-        tflush = 0 # Accumulated time since last flush
 
         # Constructor
         def __init__(self, proctbl):
                 self.pt = proctbl
+                self.pq = [] # Process Queue
+                self.tmax = 200 # Max time between flushes
+                self.tflush = 0 # Accumulated time since last flush
                 
         # InsertPID process into queue
         def InsertPID(self, pid):
@@ -261,6 +295,7 @@ class HRRN:
                 i = 0
                 j = 0
                 sumtime = 0
+                maxpid = 0
                 # Loop through process queue
                 for pid in self.pq:
                         i = i + 1
@@ -290,11 +325,18 @@ class HRRN:
                 self.tflush += runtime
                 # Flush top 10 processes from queue if particular time elapsed
                 # OK to be over flush time
-                if self.tflush > self.tmax:
+                if self.tflush >= self.tmax:
+                        self.tflush = 0
                         tenprocesses = []
-                        for a in range(0,9):
-                                tenprocesses.append(self.pq[a])
-                                self.pq.pop(a)
-                        return tenprocesses
+                        if len(self.pq) > 10:
+                                for a in range(0,10):
+                                        tenprocesses.append(self.pq[0])
+                                        self.pq.pop(0)
+                                return tenprocesses
+                        else:
+                                for a in range(0,len(self.pq)):
+                                        tenprocesses.append(self.pq[0])
+                                        self.pq.pop(0)
+                                return tenprocesses
                 else:
                         return None

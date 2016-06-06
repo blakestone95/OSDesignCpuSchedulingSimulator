@@ -3,19 +3,18 @@
 # Processes might need to have the processslot associated with them
 
 class CPU:
-    #Initialize Variables
-    state = "idle"      #State of processor
-    twait = 0           #Time processor is idle
-    tactive = 0         #Time processor is runnings
-    pid = 0
-    processingtime = 0  #Time spent processing (needed for RR)
-    processtime = 0     #Counter for processor to increment to burst time
-    currentq = -1        #Store current queue processing from (-1 means none)
-    #ProcTbl = None      #Process table 
 
     #Initialize process table to the same address as a passed variable
-    #def __init__(self,ProcTbl):
-    #    self.ProcTbl = ProcTbl
+    def __init__(self,ProcTbl):
+        self.ProcTbl = ProcTbl
+        #Initialize Variables
+        self.state = "idle"      #State of processor
+        self.twait = 0           #Time processor is idle
+        self.tactive = 0         #Time processor is runnings
+        self.pid = 0
+        self.processingtime = 0  #Time spent processing (needed for RR)
+        self.processtime = 0     #Counter for processor to increment to burst time
+        self.currentq = -1        #Store current queue processing from (-1 means none)
 
     #Set processor to execute a specified process from the pid
     def Execute(self,pid,runtime,qlvl):
@@ -23,10 +22,14 @@ class CPU:
         self.processtime = runtime
         self.processingtime = 0
         self.currentq = qlvl
+        pcb = self.ProcTbl.GetPCB(pid)
+        pcb.state = 2
         state = "running"   #Set processor to running state
 
     #Set processor to execute a specified process from the pid
     def Halt(self):
+        pcb = self.ProcTbl.GetPCB(pid)
+        pcb.state = 1
         state = "idle"   #Set processor to running state
         self.processingtime = 0
         self.currentq = -1
@@ -44,6 +47,8 @@ class CPU:
     '''
     def DecrementTime(self,subtime):
         if state == "running":
+            pcb = self.ProcTbl.GetPCB(pid)
+            pcb.state = 3
             self.tactive += subtime
             self.processtime -= subtime
             self.processingtime += subtime
