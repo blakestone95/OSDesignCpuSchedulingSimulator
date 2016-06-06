@@ -9,40 +9,36 @@ class CPU:
     tactive = 0         #Time processor is runnings
     pid = 0
     processtime = 0     #Counter for processor to increment to burst time
-    processslot = 0     #Place holder for burst time in list
-    ProcTbl = None      #Process table 
+    currentq = 0        #Store current queue processing from
+    #ProcTbl = None      #Process table 
 
     #Initialize process table to the same address as a passed variable
-    def __init__(self,ProcTbl):
-        self.ProcTbl = ProcTbl
+    #def __init__(self,ProcTbl):
+    #    self.ProcTbl = ProcTbl
 
     #Set processor to execute a specified process from the pid
-    def execute(self,pid,runtime):
-        index = self.ProcTbl.pid.index(pid)     #Get address of process in table
-        PCB = self.ProcTbl.pcb[index]           #Get pcb from process table
-
-        #Set process burst time to first in list
+    def Execute(self,pid,runtime,qlvl):
         self.pid = pid
-        self.processslot = 0
         self.processtime = runtime
+        self.currentq = qlvl
         state = "running"   #Set processor to running state
 
     #Set processor to execute a specified process from the pid
-    def halt(self):
+    def Halt(self):
         state = "idle"   #Set processor to running state
         return [self.pid,self.processtime]
 
     #Return processor usage value
-    def usage(self):
+    def Usage(self):
         return tactive/(tactive+twait)
-
+''' Don't need these, we can access class variables directly
     def getstate(self):
         return self.state
 
     def currentruntime(self):
         return self.processtime
-
-    def decrementtime(self,subtime):
+'''
+    def DecrementTime(self,subtime):
         if state == "running":
             self.tactive += subtime
             self.processtime -= subtime
@@ -57,6 +53,7 @@ class CPU:
         return 0
 
     #Loop function to regularly update cpu state
+    #Don't think we need this
     """def loop(self):
         if state == "running":
             self.tactive += 1       #Increment active time

@@ -68,6 +68,8 @@ class ProcTbl:
 		self.pid.pop(i)
 		self.pcb.pop(i)
 
+        # Return next pid in the process table (for keeping track of next process)
+        # Doesn't delete elements unlike similarly named functions in Algorithms
 	def NextPID(self, procid):
                 i = self.pid.index(procid)
                 if i == len(self.pid):
