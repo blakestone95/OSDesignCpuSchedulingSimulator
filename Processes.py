@@ -74,7 +74,7 @@ class ProcTbl:
                 i = self.pid.index(procid)
                 if i == len(self.pid):
                         return None
-                elif:
+                else:
                         return self.pid[i+1]
 		
 	# Retrieve the PCB associated with a particular process id
