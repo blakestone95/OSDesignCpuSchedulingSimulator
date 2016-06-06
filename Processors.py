@@ -9,7 +9,7 @@ class CPU:
     tactive = 0         #Time processor is runnings
     pid = 0
     processtime = 0     #Counter for processor to increment to burst time
-    currentq = 0        #Store current queue processing from
+    currentq = -1        #Store current queue processing from (-1 means none)
     #ProcTbl = None      #Process table 
 
     #Initialize process table to the same address as a passed variable
@@ -26,6 +26,7 @@ class CPU:
     #Set processor to execute a specified process from the pid
     def Halt(self):
         state = "idle"   #Set processor to running state
+        self.currentq = -1
         return [self.pid,self.processtime]
 
     #Return processor usage value
@@ -43,8 +44,9 @@ class CPU:
             self.tactive += subtime
             self.processtime -= subtime
             if self.processtime == 0:
-                state = "idle"
-                return pid
+                self.state = "idle"
+                self.currentq = -1
+                return self.pid
             elif self.processtime < 0:
                 print("error CPU time < 0")
         elif state == "idle":

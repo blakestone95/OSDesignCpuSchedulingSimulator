@@ -59,9 +59,13 @@ def Overlord(datafilereader):
             burst.append(row[i])
         masterpt.InsertPID(row[0],burst,row[1])
 
+    # Get first pid
     incomingpid = masterpt.pid[0]
-
+    
+#------------------------------------------------------------------------------#
     while not done == True:
+
+        # Allocate processes to CPU's and service preemptive queues
         for processor in processors:
             qlevel = 0
             if processor.state == "idle":
@@ -86,13 +90,25 @@ def Overlord(datafilereader):
                 
                 # Give processor a process to do, also remove needed burst time from pcb
                 processor.Execute(pid,pcb.tburst.pop(0),queues.index(chosenq))
-
-            if processor.state == "running":
+            # Check if preemptive queue needs to run new process
+            if processor.state == "running" and queues[processor.currentq].preempt == True:
+                nextpid = queues[processor.currentq].NextPID
                 
+                if not nextpid == processor.pid:
+                    # If next process is not the same as the current running process, halt execution
+                    processinfo = processor.Halt()
+                    
+                    # Insert PID back into queue
+                    queues[processor.currentq].InsertPID(processinfo[0])
+                    
+                    # Place the remaining burst time into the PCB
+                    processpcb = masterpt.GetPCB(processinfo[0])
+                    processpcb.tburst.insert(processinfo[1],0)
+                    
+                    # Execute new process
+                    nextpcb = masterpt.GetPCB(pid)
+                    processor.execute(nextpid,nextpcb.tburst.pop(0),processor.currentq)
 
-
-
-        
 
 
 
@@ -160,14 +176,8 @@ def Overlord(datafilereader):
             if not flushed is None:
                 for a in flushed:
                     queues(q+1).InsertPID(a)
-
-        # See if any preemptive queue algorithm needs to end its current process
-        for processor in processors:
-            pid = processor.pid
-            for q in queues:
-                
-
-
+                    
+#------------------------------------------------------------------------------#
         # End of simulation conditions
         if incomingpid is None and len(time) = 0:
             done = True
