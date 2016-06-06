@@ -11,6 +11,7 @@ import Processes
 class FCFS:
 	pq = [] #queue.Queue() # Process Queue
 	pt = Processes.ProcTbl() # Process Table
+        tflush = 0 # Accumulated time since last flush
 
 	# Constructor
 	def __init__(self, proctbl):
@@ -32,12 +33,28 @@ class FCFS:
 		runtime = pt.pcb(index).tburst.pop(0)
 		return runtime
 
+	# Increment flush time and decide if queue needs to be flushed
+	def Flush(self, runtime):
+                self.tflush += runtime
+                # Flush top 10 processes from queue if particular time elapsed
+                if self.tflush > 42:
+                        tenprocesses = []
+                        for a in range(0,9):
+                                tenprocesses.append(self.pq[a])
+                                self.pq.pop(a)
+                        return tenprocesses
+                elif:
+                        return None
+                                
+	
+
 # Round robin - retrieve item from top of queue, process for a time, 
 # then return to queue unless finished
 class RR:
 	pq = [] # Process Queue
 	pt = Processes.ProcTbl() # Process Table
 	tq = 1 # Time Quantum
+        tflush = 0 # Accumulated time since last flush
 	
 	# Constructor
 	def __init__(self, proctbl, timeq):
@@ -66,11 +83,25 @@ class RR:
 			pt.pcb(index).tburst[0] = pt.pcb(index).tburst[0] - tq
 			self.Insert(currentlyrunning)
 		return runtime
+
+	# Increment flush time and decide if queue needs to be flushed
+	def Flush(self, runtime):
+                self.tflush += runtime
+                # Flush top 10 processes from queue if particular time elapsed
+                if self.tflush > 42:
+                        tenprocesses = []
+                        for a in range(0,9):
+                                tenprocesses.append(self.pq[a])
+                                self.pq.pop(a)
+                        return tenprocesses
+                elif:
+                        return None
 		
 # Shortest process next - retrieve item with shortest process time
 class SPN:
 	pq = [] # Process Queue
 	pt = Processes.ProcTbl() # Process Table
+        tflush = 0 # Accumulated time since last flush
 	
 	# Constructor
 	def __init__(self, proctbl):
@@ -107,6 +138,19 @@ class SPN:
 		# Retrieve the cpu burst time
 		runtime = pt.pcb(index).tburst.pop(0)
 		return runtime
+
+	# Increment flush time and decide if queue needs to be flushed
+	def Flush(self, runtime):
+                self.tflush += runtime
+                # Flush top 10 processes from queue if particular time elapsed
+                if self.tflush > 42:
+                        tenprocesses = []
+                        for a in range(0,9):
+                                tenprocesses.append(self.pq[a])
+                                self.pq.pop(a)
+                        return tenprocesses
+                elif:
+                        return None
 				
 			
 # Shortest remaining time - retrieve item with shortest process time
@@ -114,6 +158,7 @@ class SPN:
 class SRT:
 	pq = [] # Process queue
 	pt = Processes.ProcTbl() # Process Table
+        tflush = 0 # Accumulated time since last flush
 	
 	# Constructor
 	def __init__(self, proctbl):
@@ -150,12 +195,26 @@ class SRT:
 		# Retrieve the cpu burst time
 		runtime = pt.pcb(index).tburst.pop(0)
 		return runtime
+
+	# Increment flush time and decide if queue needs to be flushed
+	def Flush(self, runtime):
+                self.tflush += runtime
+                # Flush top 10 processes from queue if particular time elapsed
+                if self.tflush > 42:
+                        tenprocesses = []
+                        for a in range(0,9):
+                                tenprocesses.append(self.pq[a])
+                                self.pq.pop(a)
+                        return tenprocesses
+                elif:
+                        return None
 		
 # Highest response ratio next - calculate response ratio for each process and 
 #								choose the one with the highest
 class HRRN:
 	pq = [] # Process queue
 	pt = Processes.ProcTbl() # Process Table
+        tflush = 0 # Accumulated time since last flush
 	
 	# Constructor
 	def __init__(self, proctbl):
@@ -197,3 +256,16 @@ class HRRN:
 		# Retrieve the cpu burst time
 		runtime = pt.pcb(index).tburst.pop(0)
 		return runtime
+
+	# Increment flush time and decide if queue needs to be flushed
+	def Flush(self, runtime):
+                self.tflush += runtime
+                # Flush top 10 processes from queue if particular time elapsed
+                if self.tflush > 42:
+                        tenprocesses = []
+                        for a in range(0,9):
+                                tenprocesses.append(self.pq[a])
+                                self.pq.pop(a)
+                        return tenprocesses
+                elif:
+                        return None

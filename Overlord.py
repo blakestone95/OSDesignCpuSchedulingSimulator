@@ -8,8 +8,22 @@ import Processes
 import Algorithms
 import Processors
 import csv
+from bisect import bisect
+import random
+import math
 
 currenttime = 0
+
+def weighted_choice(choices):
+    values, weights = zip(*choices)
+    total = 0
+    cum_weights = []
+    for w in weights:
+        total += w
+        cum_weights.append(total)
+    x = random.random() * total
+    i = bisect(cum_weights, x)
+    return values[i]
 
 def Overlord(datafilereader):
     # Instead of Overlord starting everything, Overlord will be called by GUI 
@@ -32,7 +46,7 @@ def Overlord(datafilereader):
     for row in datafilereader:
         
         burst = []
-        for i in range(2,len(row)):
+        for i in range(2,len(row) - 1):
             burst.append(row[i])
         masterpt.Insert(row[0],burst,row[1])
 
@@ -43,6 +57,21 @@ def Overlord(datafilereader):
             if processor.getstate() == "idle":
 
                 # Get pid from queue
+                # Choose queue based on a probability distribution
+                probabilities = []
+                choices = []
+                total = 0
+                for q in queues:
+                    total += len(q.pq)
+                for a in range(1,len(queues)):
+                    # Set priority such that first queues get higher priority and
+                    # priority is also based on # elements in queue
+                    probabilities.append(math.ceil(len(queues[a-1].pq)/total*100/(a*2)))
+                    choices.append((queues[a-1],probabilities[a-1]))
+                chosenq = weighted_choice(choices)
+
+                # Get next PID from chosen queue
+                pid = chosenq.NextPID()
                 
                 # Give processor a process to do
                 processor.execute(pid,runtime)
@@ -109,11 +138,17 @@ def Overlord(datafilereader):
 
 #------------------------------------------------------------------------------#
         # Service queues
-        
+        # Look at queues and move pids up levels if time met
+        for q in range(0,len(queues) - 1):
+            flushed = queues(q).Flush(subtime)
+            if not flushed is None:
+                queues(q+1).pq.append(flushed)
+
+        # 
 
 
-        # end of simulation conditions
-        if incomingpid is None:
+        # End of simulation conditions
+        if incomingpid is None and len(time) = 0:
             done = True
             
         # Increment current time
