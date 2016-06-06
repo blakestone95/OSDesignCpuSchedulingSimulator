@@ -6,7 +6,6 @@
 # Control process distribution, monitor cpu cores, manage queues, run simulation
 import Processes
 import Algorithms
-import cpuScheduler
 import Processors
 import csv
 
@@ -55,7 +54,7 @@ def Overlord(datafilereader):
 
 
 #------------------------------------------------------------------------------#
-        # collect all times for comparison
+        # Collect all times for comparison
         times = []
         # Get time from now to time of next arriving process
         if not incomingpid is None:
@@ -66,10 +65,13 @@ def Overlord(datafilereader):
         for processor in processors:
             if not processor.getstate() == "idle":
                 times.append(processor.currentruntime())
+        if not len(ioqueue) == 0:
+            for ios in ioqueue:
+                times.append(ios[1])
 
         subtime = min(times)
 
-        # Need to decrement current time from cpu's
+        # Need to decrement run time from cpu's
         for processor in processors:
             if not processor.getstate() == "idle":
                 finishedpid = processor.decrementtime(subtime)
@@ -82,12 +84,21 @@ def Overlord(datafilereader):
                         finishedpcb.state = 3
                         ioqueue.append([finishedpid, finishedpcb.tburst.pop(0)])
                     elif:
-                        # Set process to finished
+                        # Set process to finished and store its finishing time
                         finishedpcb.state = 4
                         finishedpcb.tfinish = currenttime + subtime
-                        # Remove finished process from queue
-                        for q in queues:
-                            q.pq.remove(finishedpid)
+                    # Remove finished process from queue
+                    for q in queues:
+                        q.pq.remove(finishedpid)
+
+        # Service ioqueue
+        if not len(ioqueue) == 0:
+            # Subtract run time from each io element and send back to first queue
+            # if done io'ing
+            for ios in ioqueue:
+                ios[1] = ios[1] - subtime
+                if ios[1] == 0:
+                    queues[0].Insert(ios[0])
 
         # Get next incoming process
         if subtime == tnextprocess and not incomingpid is None:
