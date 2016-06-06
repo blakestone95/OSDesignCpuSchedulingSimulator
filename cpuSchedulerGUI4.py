@@ -346,8 +346,6 @@ class Ui_CPU_Scheduler(object):
         self.stop_btn.clicked.connect(self.stop_btn_clicked)
 
     def run_btn_clicked(self):
-        def variables(self, reader, coreCount, queueCount, algorithm1, algorithm2, algorithm3, algorithm4, algorithm5, algorithm6, algorithm7, algorithm8, RRTimeQ1, RRTimeQ2, RRTimeQ3, RRTimeQ4, RRTimeQ5, RRTimeQ6, RRTimeQ7, RRTimeQ8):
-            test.someFunction(self, reader, coreCount, queueCount, algorithm1, algorithm2, algorithm3, algorithm4, algorithm5, algorithm6, algorithm7, algorithm8, RRTimeQ1, RRTimeQ2, RRTimeQ3, RRTimeQ4, RRTimeQ5, RRTimeQ6, RRTimeQ7, RRTimeQ8)
         coreCount = self.coreCount.value()
         queueCount = self.queues.value()
         RRTimeQ1 = self.RRTimeQ1.value()
@@ -370,7 +368,7 @@ class Ui_CPU_Scheduler(object):
         processInputLocation = processInputLocation.replace('file:///', '')
         with open(processInputLocation) as f:
              reader = csv.reader(f)
-        variables(self, reader, coreCount, queueCount, algorithm1, algorithm2, algorithm3, algorithm4, algorithm5, algorithm6, algorithm7, algorithm8, RRTimeQ1, RRTimeQ2, RRTimeQ3, RRTimeQ4, RRTimeQ5, RRTimeQ6, RRTimeQ7, RRTimeQ8)
+        test.someFunction(self, reader, coreCount, queueCount, algorithm1, algorithm2, algorithm3, algorithm4, algorithm5, algorithm6, algorithm7, algorithm8, RRTimeQ1, RRTimeQ2, RRTimeQ3, RRTimeQ4, RRTimeQ5, RRTimeQ6, RRTimeQ7, RRTimeQ8)
 
         #     #for row in reader:
         #         #self.output1.append(str(row))
