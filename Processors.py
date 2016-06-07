@@ -24,16 +24,22 @@ class CPU:
         self.currentq = qlvl
         pcb = self.ProcTbl.GetPCB(pid)
         pcb.state = 2
-        state = "running"   #Set processor to running state
+        self.state = "running"   #Set processor to running state
 
-    #Set processor to execute a specified process from the pid
+    # Stop processing and return the pid and remaining time for that process
     def Halt(self):
-        pcb = self.ProcTbl.GetPCB(pid)
+        pcb = self.ProcTbl.GetPCB(self.pid)
         pcb.state = 1
-        state = "idle"   #Set processor to running state
+        # Get pid and remaining time before CPU is reset
+        pid = self.pid
+        pt = self.processtime
+        # Reset CPU
+        self.state = "idle"
+        self.pid = 0
         self.processingtime = 0
+        self.processtime = 0
         self.currentq = -1
-        return [self.pid,self.processtime]
+        return [pid,pt]
 
     #Return processor usage value
     def Usage(self):
@@ -46,21 +52,31 @@ class CPU:
         return self.processtime
     '''
     def DecrementTime(self,subtime):
-        if state == "running":
-            pcb = self.ProcTbl.GetPCB(pid)
-            pcb.state = 3
+        if self.state == "running":
+            pcb = self.ProcTbl.GetPCB(self.pid)
+            pcb.state = 2
             self.tactive += subtime
             self.processtime -= subtime
             self.processingtime += subtime
+            # If process finised reset CPU
             if self.processtime == 0:
+                # Retrieve finished pid
+                pid = self.pid
+                # Reset
                 self.state = "idle"
+                self.pid = 0
+                self.processingtime = 0
+                self.processtime = 0
                 self.currentq = -1
                 return self.pid
+            # Error
             elif self.processtime < 0:
                 print("error CPU time < 0")
-        elif state == "idle":
+        # If processor is idle, add to the cpu wait time
+        elif self.state == "idle":
             self.twait += subtime
             #print("error can't decrement, CPU is idle")
+        
         return 0
 
     #Loop function to regularly update cpu state
