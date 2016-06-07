@@ -68,7 +68,7 @@ class CPU:
                 self.processingtime = 0
                 self.processtime = 0
                 self.currentq = -1
-                return self.pid
+                return pid
             # Error
             elif self.processtime < 0:
                 print("error CPU time < 0")

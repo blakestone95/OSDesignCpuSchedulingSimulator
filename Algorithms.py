@@ -13,6 +13,8 @@ class FCFS:
                 self.pt = proctbl
                 self.pq = [] # Process Queue
                 self.tmax = 200 # Max time between flushes
+                self.lastpid = -1 # Store the last pid that was returned from NextPID
+                self.lastpidindex = -1
                 self.tflush = 0 # Accumulated time since last flush
 
         # InsertPID process into queue
@@ -25,13 +27,28 @@ class FCFS:
 
         # Get next pid to be run
         def NextPID(self):
-                i = 0
-                pcb = self.pt.GetPCB(self.pq[i])
-                # Get first non-running process
-                while not pcb.state == 1:
-                        i += 1
-                        pcb = self.pt.GetPCB(self.pq[i])
-                return self.pq[i]
+                if self.lastpid == -1 and not len(self.pq) == 0:
+                        self.lastpid = self.pq[0]
+                        self.lastpidindex = 0
+                try:
+                        self.lastpidindex = self.pq.index(self.lastpid)
+                except ValueError:
+                        # Decrement one if last pid was deleted
+                        self.lastpidindex -= 1
+                if self.lastpidindex < len(self.pq) - 1:
+                        self.lastpid = self.pq[self.lastpidindex + 1]
+                else:
+                        self.lastpid = self.pq[0]
+                        
+                pcb = self.pt.GetPCB(self.lastpid)
+                if pcb.state == 2:
+                        # Return -1 if full
+                        return -2
+                else:
+                        # Return new lastpid otherwise
+                        return self.lastpid
+                # In case any of the other return statements aren't reached
+                return -1
 
         # Increment flush time and decide if queue needs to be flushed
         def Flush(self, runtime):
@@ -40,6 +57,9 @@ class FCFS:
                 # OK to be over flush time
                 if self.tflush >= self.tmax:
                         self.tflush = 0
+                        # Set lastpid to default if it is within range to be flushed
+                        if self.pq.index(self.lastpid) < 10:
+                                self.lastpid = -1
                         tenprocesses = []
                         if len(self.pq) > 10:
                                 for a in range(0,10):
@@ -69,7 +89,9 @@ class RR:
                 self.tmax = timeq*20 # Max time between flushes
                 self.tflush = 0 # Accumulated time since last flush
                 self.pq = [] # Process Queue
-                self.lastpid = 0 # Store the last pid that was returned from NextPID                self.tflush = 0 # Accumulated time since last flush
+                self.lastpid = -1 # Store the last pid that was returned from NextPID
+                self.lastpidindex = -1
+                self.tflush = 0 # Accumulated time since last flush
                 
         # InsertPID process into queue
         def InsertPID(self, pid):
@@ -97,9 +119,9 @@ class RR:
         def NextPID(self,runningpid,runtime):
                 # If the time quantum has not elapsed, return running process sent from cpu
                 if not runningpid == 0 and runtime < self.tq:
-                        self.lastpid = runningpid
+                        return runningpid
                 else:
-                        lastrunning = 0
+                        '''lastrunning = 0
                         lastrunningindex = -1
                         # Set lastrunning if only element and running
                         if len(self.pq) == 1:
@@ -127,8 +149,30 @@ class RR:
                                                         lastrunning = pcb.pid
                                                         lastrunningindex = i
                         else:
-                                print("Error queue empty")
-
+                                print("Error queue empty")'''
+                        if self.lastpid == -1 and not len(self.pq) == 0:
+                                self.lastpid = self.pq[0]
+                                self.lastpidindex = 0
+                        try:
+                                self.lastpidindex = self.pq.index(self.lastpid)
+                        except ValueError:
+                                # Decrement one if last pid was deleted
+                                self.lastpidindex -= 1
+                        if self.lastpidindex < len(self.pq) - 1:
+                                self.lastpid = self.pq[self.lastpidindex + 1]
+                        else:
+                                self.lastpid = self.pq[0]
+                                
+                        pcb = self.pt.GetPCB(self.lastpid)
+                        if pcb.state == 2:
+                                # Return -2 if all running
+                                return -2
+                        else:
+                                # Return new lastpid otherwise
+                                return self.lastpid
+                        # In case any of the other return statements aren't reached
+                        return -1
+                '''
                         print("Last running ",lastrunning," runtime ",runtime," lst rn index ",lastrunningindex," len ",len(self.pq))
                         if lastrunning == 0:
                                 # Find out if contains non-running processes
@@ -155,36 +199,8 @@ class RR:
                                 print("Same process")
                         else:
                                 print("Error no pid returned")
-                                self.lastpid = 0
-                return self.lastpid
-                                
-                '''
-                if currentlyrunning == 0:
-                        self.lastpid = self.pq[0]
-                        return self.lastpid
-                try:
-                        index = self.pq.index(currentlyrunning)
-                except ValueError:
-                        return None
-                # Return self if not needing replacement
-                if runtime < self.tq:
-                        self.lastpid = self.pq[index]
-                        return self.lastpid
-                # Return next ready process if does need replacement
-                else:
-                        for i in range(0,len(self.pq)):
-                                pcb = self.pt.GetPCB(self.pq[index])
-                        pcb = self.pt.GetPCB(self.pq[index])
-                        # Get first non-running process
-                        while not pcb.state == 1:
-                                index += 1
-                                try:
-                                        pcb = self.pt.GetPCB(self.pq[index])
-                                except IndexError:
-                                        index = 0
-                                        #break
-                        self.lastpid = self.pq[index]
-                        return self.lastpid'''
+                                self.lastpid = -1
+                return self.lastpid'''
 
         # Increment flush time and decide if queue needs to be flushed
         def Flush(self, runtime):
@@ -192,7 +208,9 @@ class RR:
                 # Flush top 10 processes from queue if particular time elapsed
                 if self.tflush >= self.tmax:
                         self.tflush = 0
-                        self.lastpid = 0
+                        # Set lastpid to default if it is within range to be flushed
+                        if self.pq.index(self.lastpid) < 10:
+                                self.lastpid = -1
                         tenprocesses = []
                         if len(self.pq) > 10:
                                 for a in range(0,10):
