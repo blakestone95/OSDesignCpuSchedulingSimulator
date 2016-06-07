@@ -72,7 +72,7 @@ class ProcTbl:
         # Doesn't delete elements unlike similarly named functions in Algorithms
 	def NextPID(self, procid):
                 i = self.pid.index(procid)
-                if i == len(self.pid):
+                if i == len(self.pid) - 1:
                         return None
                 else:
                         return self.pid[i+1]
