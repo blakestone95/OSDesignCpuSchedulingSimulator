@@ -49,10 +49,10 @@ class Ui_CPU_Scheduler(object):
         self.run_btn.setMinimumSize(QtCore.QSize(131, 31))
         self.run_btn.setObjectName("run_btn")
         self.gridLayout_2.addWidget(self.run_btn, 4, 0, 1, 2)
-        self.stop_btn = QtWidgets.QPushButton(self.widgetOutput)
-        self.stop_btn.setMinimumSize(QtCore.QSize(131, 31))
-        self.stop_btn.setObjectName("stop_btn")
-        self.gridLayout_2.addWidget(self.stop_btn, 5, 0, 1, 2)
+        self.writeData_btn = QtWidgets.QPushButton(self.widgetOutput)
+        self.writeData_btn.setMinimumSize(QtCore.QSize(131, 31))
+        self.writeData_btn.setObjectName("writeData_btn")
+        self.gridLayout_2.addWidget(self.writeData_btn, 5, 0, 1, 2)
         self.coreCount = QtWidgets.QSpinBox(self.widgetOutput)
         self.coreCount.setMinimum(0)
         self.coreCount.setMaximum(99)
@@ -238,7 +238,7 @@ class Ui_CPU_Scheduler(object):
 "<p align=\"center\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
         self.processInput.setPlaceholderText(_translate("CPU_Scheduler", "process input .csv"))
         self.run_btn.setText(_translate("CPU_Scheduler", "Run"))
-        self.stop_btn.setText(_translate("CPU_Scheduler", "Stop"))
+        self.writeData_btn.setText(_translate("CPU_Scheduler", "Write Data"))
         self.coreCount.setWhatsThis(_translate("CPU_Scheduler", "<html><head/><body><p>coreCount</p></body></html>"))
         self.coreCount_lbl.setText(_translate("CPU_Scheduler", "Core Count"))
         self.algorithm1.setItemText(0, _translate("CPU_Scheduler", "None"))
@@ -306,7 +306,7 @@ class Ui_CPU_Scheduler(object):
 
 
         self.run_btn.clicked.connect(self.run_btn_clicked)
-        self.stop_btn.clicked.connect(self.stop_btn_clicked)
+        self.writeData_btn.clicked.connect(self.writeData_btn_clicked)
 
     def run_btn_clicked(self):
         """self.coreCount = self.coreCount.value()
@@ -338,8 +338,8 @@ class Ui_CPU_Scheduler(object):
             thread1.start()
             thread1.join()
         #output42 = test.passedVariables(self, reader, coreCount, queueCount, algorithm1, algorithm2, algorithm3, algorithm4, algorithm5, algorithm6, algorithm7, algorithm8, RRTimeQ1, RRTimeQ2, RRTimeQ3, RRTimeQ4, RRTimeQ5, RRTimeQ6, RRTimeQ7, RRTimeQ8)
-    def stop_btn_clicked(self):
-        self.output1.append("stop clicked")
+    def writeData_btn_clicked(self):
+        self.output1.append("writeData clicked")
 
     def getflag(self):
         TQ = []
