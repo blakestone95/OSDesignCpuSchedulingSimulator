@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'cpuSchedulerGUI3.ui'
+# Form implementation generated from reading ui file 'cpuSchedulerGUI5.ui'
 #
 # Created by: PyQt5 UI code generator 5.6
 #
 # WARNING! All changes made in this file will be lost!
+
 from PyQt5 import QtCore, QtGui, QtWidgets
 import csv
 import Overlord
@@ -20,55 +21,38 @@ class myThread (threading.Thread):
         self.name = name
         self.counter = counter
     def run(self):
-        ui.mastercontrol()
+        self.mastercontrol()
 
 class Ui_CPU_Scheduler(object):
     def setupUi(self, CPU_Scheduler):
-        self.turnaroundresults = {}
-        self.waitresults = {}
-        self.responseresults = {}
-        self.files = []
-        self.usedflag = ""
         CPU_Scheduler.setObjectName("CPU_Scheduler")
-        CPU_Scheduler.resize(826, 309)
-        self.horizontalLayout = QtWidgets.QHBoxLayout(CPU_Scheduler)
-        self.horizontalLayout.setObjectName("horizontalLayout")
+        CPU_Scheduler.resize(419, 309)
+        self.gridLayout = QtWidgets.QGridLayout(CPU_Scheduler)
+        self.gridLayout.setObjectName("gridLayout")
         self.widgetOutput = QtWidgets.QWidget(CPU_Scheduler)
         self.widgetOutput.setMinimumSize(QtCore.QSize(401, 291))
         self.widgetOutput.setObjectName("widgetOutput")
         self.gridLayout_2 = QtWidgets.QGridLayout(self.widgetOutput)
         self.gridLayout_2.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_2.setObjectName("gridLayout_2")
-        self.line = QtWidgets.QFrame(self.widgetOutput)
-        self.line.setFrameShape(QtWidgets.QFrame.VLine)
-        self.line.setFrameShadow(QtWidgets.QFrame.Sunken)
-        self.line.setObjectName("line")
-        self.gridLayout_2.addWidget(self.line, 0, 2, 7, 1)
         self.processInput = QtWidgets.QTextEdit(self.widgetOutput)
         self.processInput.setMinimumSize(QtCore.QSize(131, 31))
         self.processInput.setMaximumSize(QtCore.QSize(131, 31))
         self.processInput.setObjectName("processInput")
         self.gridLayout_2.addWidget(self.processInput, 0, 0, 1, 2)
-        self.output1 = QtWidgets.QTextBrowser(self.widgetOutput)
-        self.output1.setMinimumSize(QtCore.QSize(111, 131))
-        self.output1.setContextMenuPolicy(QtCore.Qt.PreventContextMenu)
-        self.output1.setObjectName("output1")
-        self.gridLayout_2.addWidget(self.output1, 0, 3, 2, 1)
-        self.output2 = QtWidgets.QTextBrowser(self.widgetOutput)
-        self.output2.setMinimumSize(QtCore.QSize(111, 131))
-        self.output2.setObjectName("output2")
-        self.gridLayout_2.addWidget(self.output2, 0, 4, 2, 1)
-        self.coreCount_lbl = QtWidgets.QLabel(self.widgetOutput)
-        self.coreCount_lbl.setObjectName("coreCount_lbl")
-        self.gridLayout_2.addWidget(self.coreCount_lbl, 2, 0, 1, 1)
-        self.output3 = QtWidgets.QTextBrowser(self.widgetOutput)
-        self.output3.setMinimumSize(QtCore.QSize(111, 131))
-        self.output3.setObjectName("output3")
-        self.gridLayout_2.addWidget(self.output3, 2, 3, 5, 1)
-        self.output4 = QtWidgets.QTextBrowser(self.widgetOutput)
-        self.output4.setMinimumSize(QtCore.QSize(111, 131))
-        self.output4.setObjectName("output4")
-        self.gridLayout_2.addWidget(self.output4, 2, 4, 5, 1)
+        self.line = QtWidgets.QFrame(self.widgetOutput)
+        self.line.setFrameShape(QtWidgets.QFrame.VLine)
+        self.line.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line.setObjectName("line")
+        self.gridLayout_2.addWidget(self.line, 0, 2, 6, 1)
+        self.run_btn = QtWidgets.QPushButton(self.widgetOutput)
+        self.run_btn.setMinimumSize(QtCore.QSize(131, 31))
+        self.run_btn.setObjectName("run_btn")
+        self.gridLayout_2.addWidget(self.run_btn, 4, 0, 1, 2)
+        self.stop_btn = QtWidgets.QPushButton(self.widgetOutput)
+        self.stop_btn.setMinimumSize(QtCore.QSize(131, 31))
+        self.stop_btn.setObjectName("stop_btn")
+        self.gridLayout_2.addWidget(self.stop_btn, 5, 0, 1, 2)
         self.coreCount = QtWidgets.QSpinBox(self.widgetOutput)
         self.coreCount.setMinimum(0)
         self.coreCount.setMaximum(99)
@@ -79,22 +63,10 @@ class Ui_CPU_Scheduler(object):
         self.line_2.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_2.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_2.setObjectName("line_2")
-        self.gridLayout_2.addWidget(self.line_2, 4, 0, 1, 2)
-        self.queues = QtWidgets.QSpinBox(self.widgetOutput)
-        self.queues.setProperty("value", 1)
-        self.queues.setObjectName("queues")
-        self.gridLayout_2.addWidget(self.queues, 3, 1, 1, 1)
-        self.run_btn = QtWidgets.QPushButton(self.widgetOutput)
-        self.run_btn.setMinimumSize(QtCore.QSize(131, 31))
-        self.run_btn.setObjectName("run_btn")
-        self.gridLayout_2.addWidget(self.run_btn, 5, 0, 1, 2)
-        self.queues_lbl = QtWidgets.QLabel(self.widgetOutput)
-        self.queues_lbl.setObjectName("queues_lbl")
-        self.gridLayout_2.addWidget(self.queues_lbl, 3, 0, 1, 1)
-        self.stop_btn = QtWidgets.QPushButton(self.widgetOutput)
-        self.stop_btn.setMinimumSize(QtCore.QSize(131, 31))
-        self.stop_btn.setObjectName("stop_btn")
-        self.gridLayout_2.addWidget(self.stop_btn, 6, 0, 1, 2)
+        self.gridLayout_2.addWidget(self.line_2, 3, 0, 1, 2)
+        self.coreCount_lbl = QtWidgets.QLabel(self.widgetOutput)
+        self.coreCount_lbl.setObjectName("coreCount_lbl")
+        self.gridLayout_2.addWidget(self.coreCount_lbl, 2, 0, 1, 1)
         self.tabWidget = QtWidgets.QTabWidget(self.widgetOutput)
         self.tabWidget.setMaximumSize(QtCore.QSize(131, 81))
         self.tabWidget.setTabsClosable(False)
@@ -114,6 +86,7 @@ class Ui_CPU_Scheduler(object):
         self.algorithm1.addItem("")
         self.verticalLayout_7.addWidget(self.algorithm1)
         self.RRTimeQ1 = QtWidgets.QSpinBox(self.algorithm1tab)
+        self.RRTimeQ1.setMinimum(1)
         self.RRTimeQ1.setObjectName("RRTimeQ1")
         self.verticalLayout_7.addWidget(self.RRTimeQ1)
         self.tabWidget.addTab(self.algorithm1tab, "")
@@ -167,9 +140,9 @@ class Ui_CPU_Scheduler(object):
         self.algorithm4.addItem("")
         self.algorithm4.addItem("")
         self.verticalLayout_5.addWidget(self.algorithm4)
-        self.RRTimeQ4 = QtWidgets.QSpinBox(self.algorithm4tab)
-        self.RRTimeQ4.setObjectName("RRTimeQ4")
-        self.verticalLayout_5.addWidget(self.RRTimeQ4)
+        self.spinBoxQ4 = QtWidgets.QSpinBox(self.algorithm4tab)
+        self.spinBoxQ4.setObjectName("spinBoxQ4")
+        self.verticalLayout_5.addWidget(self.spinBoxQ4)
         self.tabWidget.addTab(self.algorithm4tab, "")
         self.algorithm5tab = QtWidgets.QWidget()
         self.algorithm5tab.setObjectName("algorithm5tab")
@@ -244,20 +217,12 @@ class Ui_CPU_Scheduler(object):
         self.verticalLayout.addWidget(self.RRTimeQ8)
         self.tabWidget.addTab(self.algorithm8tab, "")
         self.gridLayout_2.addWidget(self.tabWidget, 1, 0, 1, 2)
-        self.horizontalLayout.addWidget(self.widgetOutput)
-        self.widget = QtWidgets.QWidget(CPU_Scheduler)
-        self.widget.setMinimumSize(QtCore.QSize(401, 291))
-        self.widget.setObjectName("widget")
-        self.gridLayout = QtWidgets.QGridLayout(self.widget)
-        self.gridLayout.setContentsMargins(0, 0, 0, 0)
-        self.gridLayout.setObjectName("gridLayout")
-        self.graphicsView = QtWidgets.QGraphicsView(self.widget)
-        self.graphicsView.setMinimumSize(QtCore.QSize(379, 269))
-        self.graphicsView.setObjectName("graphicsView")
-        self.gridLayout.addWidget(self.graphicsView, 0, 0, 1, 1)
-        self.horizontalLayout.addWidget(self.widget)
-        self.widget.raise_()
-        self.widgetOutput.raise_()
+        self.output1 = QtWidgets.QTextBrowser(self.widgetOutput)
+        self.output1.setMinimumSize(QtCore.QSize(111, 131))
+        self.output1.setContextMenuPolicy(QtCore.Qt.PreventContextMenu)
+        self.output1.setObjectName("output1")
+        self.gridLayout_2.addWidget(self.output1, 0, 3, 6, 1)
+        self.gridLayout.addWidget(self.widgetOutput, 0, 0, 1, 1)
 
         self.retranslateUi(CPU_Scheduler)
         self.tabWidget.setCurrentIndex(0)
@@ -272,35 +237,10 @@ class Ui_CPU_Scheduler(object):
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:7.8pt; font-weight:400; font-style:normal;\">\n"
 "<p align=\"center\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
         self.processInput.setPlaceholderText(_translate("CPU_Scheduler", "process input .csv"))
-        self.output1.setHtml(_translate("CPU_Scheduler", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:7.8pt; font-weight:400; font-style:normal;\">\n"
-"<p align=\"center\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
-        self.output1.setPlaceholderText(_translate("CPU_Scheduler", "Sample Output Box 1"))
-        self.output2.setHtml(_translate("CPU_Scheduler", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:7.8pt; font-weight:400; font-style:normal;\">\n"
-"<p align=\"center\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
-        self.output2.setPlaceholderText(_translate("CPU_Scheduler", "Sample Output Box 2"))
-        self.coreCount_lbl.setText(_translate("CPU_Scheduler", "Core Count"))
-        self.output3.setHtml(_translate("CPU_Scheduler", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:7.8pt; font-weight:400; font-style:normal;\">\n"
-"<p align=\"center\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
-        self.output3.setPlaceholderText(_translate("CPU_Scheduler", "Sample Output Box 3"))
-        self.output4.setHtml(_translate("CPU_Scheduler", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:7.8pt; font-weight:400; font-style:normal;\">\n"
-"<p align=\"center\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
-        self.output4.setPlaceholderText(_translate("CPU_Scheduler", "Sample Output Box 4"))
-        self.coreCount.setWhatsThis(_translate("CPU_Scheduler", "<html><head/><body><p>coreCount</p></body></html>"))
         self.run_btn.setText(_translate("CPU_Scheduler", "Run"))
-        self.queues_lbl.setText(_translate("CPU_Scheduler", "Queues"))
         self.stop_btn.setText(_translate("CPU_Scheduler", "Stop"))
+        self.coreCount.setWhatsThis(_translate("CPU_Scheduler", "<html><head/><body><p>coreCount</p></body></html>"))
+        self.coreCount_lbl.setText(_translate("CPU_Scheduler", "Core Count"))
         self.algorithm1.setItemText(0, _translate("CPU_Scheduler", "None"))
         self.algorithm1.setItemText(1, _translate("CPU_Scheduler", "FCFS"))
         self.algorithm1.setItemText(2, _translate("CPU_Scheduler", "RR"))
@@ -357,6 +297,12 @@ class Ui_CPU_Scheduler(object):
         self.algorithm8.setItemText(4, _translate("CPU_Scheduler", "SRT"))
         self.algorithm8.setItemText(5, _translate("CPU_Scheduler", "HRRN"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.algorithm8tab), _translate("CPU_Scheduler", "Algorithm 8"))
+        self.output1.setHtml(_translate("CPU_Scheduler", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:7.8pt; font-weight:400; font-style:normal;\">\n"
+"<p align=\"center\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
+        self.output1.setPlaceholderText(_translate("CPU_Scheduler", "Output Box 1"))
 
 
         self.run_btn.clicked.connect(self.run_btn_clicked)
@@ -416,12 +362,11 @@ class Ui_CPU_Scheduler(object):
         algorithms.append(str(self.algorithm7.currentText()))
         algorithms.append(str(self.algorithm8.currentText()))
 
+        queueslength = self.queues.value()
         queueslength = 8
         for a in algorithms:
             if a == "None":
                 queueslength -= 1
-        if queueslength > self.queues.value():
-            queueslength = self.queues.value()
         stringthing = ""
         i = 0
         for a in algorithms:
@@ -430,11 +375,10 @@ class Ui_CPU_Scheduler(object):
             stringthing += a
             if a == "RR":
                 stringthing += " "+TQ[i]
-            if i < queueslength-1:
+            if i < queueslength:
                 stringthing += ","
-            else:
-                break
             i += 1
+        print(stringthing)
         self.usedflag = stringthing
                 
 
@@ -456,20 +400,6 @@ class Ui_CPU_Scheduler(object):
                 self.output()
                 
                 #print("Simulation Complete. Results:",results)
-
-    def writedata(self):
-        with open('turnaroundresults.csv', 'w', newline='') as csvfile:
-            writer = csv.writer(csvfile)
-            for element in self.turnaroundresults:
-                writer.writerow([element,sum(self.turnaroundresults[element])/len(self.turnaroundresults[element])])
-        with open('waitresults.csv', 'w', newline='') as csvfile:
-            writer = csv.writer(csvfile)
-            for element in self.waitresults:
-                writer.writerow([element,sum(self.waitresults[element])/len(self.waitresults[element])])
-        with open('responseresults.csv', 'w', newline='') as csvfile:
-            writer = csv.writer(csvfile)
-            for element in self.responseresults:
-                writer.writerow([element,sum(self.responseresults[element])/len(self.responseresults[element])])
 
     def output(self):
         print("Done")
@@ -507,15 +437,15 @@ class Ui_CPU_Scheduler(object):
         print("c")
 
         self.output1.append(str(output1This))
-        self.output2.append(str(output2This))
-        self.output3.append(str(output3This))
-        self.writedata()
+        #self.output2.append(str(output2This))
+        #self.output3.append(str(output3This))
 
-import sys
 if __name__ == "__main__":
+    import sys
     app = QtWidgets.QApplication(sys.argv)
     Form = QtWidgets.QWidget()
     ui = Ui_CPU_Scheduler()
     ui.setupUi(Form)
     Form.show()
     sys.exit(app.exec_())
+
