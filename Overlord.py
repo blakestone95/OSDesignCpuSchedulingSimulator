@@ -41,9 +41,15 @@ def Overlord(datafilereader):
     queues.append(Algorithms.RR(masterpt,10))
     queues.append(Algorithms.RR(masterpt,20))
     queues.append(Algorithms.SPN(masterpt))
+    queues.append(Algorithms.SRT(masterpt))
+    queues.append(Algorithms.HRRN(masterpt))
     queues.append(Algorithms.FCFS(masterpt))
     # Hard code processors as well
     # This'll be easy to make choosable
+    processors.append(Processors.CPU(masterpt))
+    processors.append(Processors.CPU(masterpt))
+    processors.append(Processors.CPU(masterpt))
+    processors.append(Processors.CPU(masterpt))
     processors.append(Processors.CPU(masterpt))
     processors.append(Processors.CPU(masterpt))
     processors.append(Processors.CPU(masterpt))
@@ -84,8 +90,12 @@ def Overlord(datafilereader):
                 if processor.state == "running" and queues[processor.currentq].preempt == True:
                     procq = queues[processor.currentq]
                     nextpid = procq.NextPID(processor.pid,processor.processingtime)
+                    try:
+                        tq = procq.tq
+                    except:
+                        tq = 0
                     #print("Next PID on running:",nextpid)
-                    if not nextpid == processor.pid or nextpid == -2 or procq.tq == processor.processingtime:
+                    if not nextpid == processor.pid or nextpid == -2 or tq == processor.processingtime:
                         # If next process is not the same as the current running process,
                         # halt execution
                         # Store current queue before halting
@@ -151,7 +161,7 @@ def Overlord(datafilereader):
                             #print("Tburst " + str(pcb.tburst))
 
                             if nextpcb.tresp == -1:
-                                nextpcb.tresp = currenttime
+                                nextpcb.tresp = currenttime - nextpcb.tarr
                             processor.Execute(nextpid,nextpcb.tburst.pop(0),queues.index(chosenq))
                     
 
@@ -275,6 +285,8 @@ def Overlord(datafilereader):
             
         # Increment current time
         currenttime += subtime
+        for q in queues:
+            q.IncWaitTime(subtime)
         '''for q in queues:
             print("Queue contents: " + str(q.pq))
         for p in processors:
@@ -301,16 +313,23 @@ def Overlord(datafilereader):
             print("TQ:",thingamajig2,"PT:",thingamajig3,"Subtime:",subtime)
             break
         '''
-    '''waittime = CollectData.waittime()
+    waittime = CollectData.waittime()
     responsetime = CollectData.responsetime()
     turnaroundtime = CollectData.turnaroundtime()
-    for processes in masterpt'''
+    for process in masterpt.pcb:
+        turnaroundtime.addtime(process.tarr,process.tfinish)
+        waittime.addtime(process.twait)
+        responsetime.addtime(process.tresp)
+    return [turnaroundtime.totaltime(),waittime.totaltime(),responsetime.totaltime()]
+        
         
     
 
 processInputLocation = 'C:\\Users\\Blake\\Documents\\GitHub\\SchedulerForDayz\\randomdata.csv'
 with open(processInputLocation) as f:
         datafilereader = csv.reader(f)
-        Overlord(datafilereader)
-        print("Simulation Complete")
+        results = Overlord(datafilereader)
+        
+        print("Simulation Complete. Results:",results)
+        
 

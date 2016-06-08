@@ -15,6 +15,7 @@ class PCB:
 		self.tburstsum = sum(timeburst)
 		self.tresp = -1
 		self.tfinish = 0
+		self.twait = 0
 
 		# 1 -> ready; 2 -> running; 3 -> blocked; 4 -> finished
 		if currstate is None:

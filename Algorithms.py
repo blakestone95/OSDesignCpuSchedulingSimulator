@@ -3,6 +3,7 @@
 # 
 # Classes for CPU scheduling algorithms
 import Processes
+import math
 import sys
 
 # First come first serve - retrieve item from the top of the queue
@@ -17,6 +18,13 @@ class FCFS:
                 self.lastpid = -1 # Store the last pid that was returned from NextPID
                 self.lastpidindex = -1
                 self.tflush = 0 # Accumulated time since last flush
+
+        # Increment the wait time of a process by "time"
+        def IncWaitTime(self,time):
+                for p in self.pq:
+                        pcb = self.pt.GetPCB(p)
+                        if not pcb.state == 2:
+                                pcb.twait += time
 
         # InsertPID process into queue
         def InsertPID(self, pid):
@@ -103,6 +111,13 @@ class RR:
                 self.lastpid = -1 # Store the last pid that was returned from NextPID
                 self.lastpidindex = -1
                 self.tflush = 0 # Accumulated time since last flush
+
+        # Increment the wait time of a process by "time"
+        def IncWaitTime(self,time):
+                for p in self.pq:
+                        pcb = self.pt.GetPCB(p)
+                        if not pcb.state == 2:
+                                pcb.twait += time
                 
         # InsertPID process into queue
         def InsertPID(self, pid):
@@ -202,6 +217,13 @@ class SPN:
 
                 self.tmax = 1000 # Max time between flushes
                 self.tflush = 0 # Accumulated time since last flush
+
+        # Increment the wait time of a process by "time"
+        def IncWaitTime(self,time):
+                for p in self.pq:
+                        pcb = self.pt.GetPCB(p)
+                        if not pcb.state == 2:
+                                pcb.twait += time
                 
         # InsertPID process into queue
         def InsertPID(self, pid):
@@ -269,6 +291,13 @@ class SRT:
                 self.pq = [] # Process Queue
                 self.tmax = 1000 # Max time between flushes
                 self.tflush = 0 # Accumulated time since last flush
+
+        # Increment the wait time of a process by "time"
+        def IncWaitTime(self,time):
+                for p in self.pq:
+                        pcb = self.pt.GetPCB(p)
+                        if not pcb.state == 2:
+                                pcb.twait += time
                 
         # InsertPID process into queue
         def InsertPID(self, pid):
@@ -287,24 +316,22 @@ class SRT:
                 mintime = sys.maxsize
                 # Loop through process queue
                 for pid in self.pq:
-                        i = i + 1
+                        i += 1
                         pcb = self.pt.GetPCB(pid)
-                        print("SRT PIDS",pid,pcb.state)
-                        # Choose processes that are ready or
-                        # that are the same as the currently running process
-                        if pcb.state == 1 or pid == runningpid:
+                        #print("SPN PIDS",pid,pcb.state)
+                        # Choose processes that are ready
+                        if pcb.state == 1:# or pid == runningpid:
                                 # Record the first CPU burst time and pid on first iteration
                                 if i == 1:
                                         mintime = pcb.tburst[0]
                                         minpid = pid
                                 # On other pid's only replace minimum time and assoc pid if that
-                                # process has a smaller burst time than the current smallest
-                                if (not i == 1) and (pcb.tburst[0] < mintime):
+                                # process has a smaller brust time than the current smallest
+                                if not i == 1 and pcb.tburst[0] < mintime:
                                         mintime = pcb.tburst[0]
                                         minpid = pid
                 # Return the pid stored in minpid
-                index = self.pq.index(minpid)
-                return self.pq[index]
+                return minpid
 
         # Increment flush time and decide if queue needs to be flushed
         def Flush(self, runtime):
@@ -338,6 +365,13 @@ class HRRN:
                 self.pq = [] # Process Queue
                 self.tmax = 1000 # Max time between flushes
                 self.tflush = 0 # Accumulated time since last flush
+
+        # Increment the wait time of a process by "time"
+        def IncWaitTime(self,time):
+                for p in self.pq:
+                        pcb = self.pt.GetPCB(p)
+                        if not pcb.state == 2:
+                                pcb.twait += time
                 
         # InsertPID process into queue
         def InsertPID(self, pid):
@@ -359,14 +393,15 @@ class HRRN:
                 for pid in self.pq:
                         i = i + 1
                         pcb = self.pt.GetPCB(pid)
-                        print("HRRN PIDS",pid,pcb.state)
-                        # Calculate the total required run time from pcb
-                        for j in range(0,ceil(len(pcb.tburst)/2)):
-                                sumtime = sumtime + pcb.tburst(2*j)
-                        # Calculate response ratio
-                        respratio = 1 + pcb.twait/sumtime
+                        #print("HRRN PIDS",pid,pcb.state)
+                        #print(pcb.tburst)
                         # Choose processes that are ready
                         if pcb.state == 1:
+                                # Calculate the total required run time from pcb
+                                for j in range(0,math.ceil(len(pcb.tburst)/2)):
+                                        sumtime = sumtime + pcb.tburst[2*j]
+                                # Calculate response ratio
+                                respratio = 1 + pcb.twait/sumtime
                                 # Record the first CPU burst time and pid on first iteration
                                 if i == 1:
                                         maxrr = respratio
@@ -376,9 +411,8 @@ class HRRN:
                                 if (not i == 1) and (respratio > maxrr):
                                         maxrr = respratio
                                         maxpid = pid
-                # Pop the pid stored in minpid
-                index = self.pq.index(maxpid)
-                return self.pq[index]
+                # Return the pid stored in minpid
+                return maxpid
 
         # Increment flush time and decide if queue needs to be flushed
         def Flush(self, runtime):

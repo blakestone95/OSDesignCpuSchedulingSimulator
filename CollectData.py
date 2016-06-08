@@ -32,6 +32,9 @@ class waittime:
 
         def addtime(self,tarr,tfin,tburstsum):
                 self.times.append((tfin - tarr) - tburstsum)
+                
+        def addtime(self,twait):
+                self.times.append(twait)
 
         def totaltime(self):
                 return sum(self.times)/len(self.times)
