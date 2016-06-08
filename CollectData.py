@@ -1,3 +1,19 @@
+class throughput:
+        def __init__(self):
+                self.times = []
+                
+        def addtime(self,thru):
+                self.times.append(sum(thru)/len(thru))
+                
+        def totaltime(self,queueslist):
+                i = 0
+                x = []
+                for a in self.times:
+                        x.append([queueslist[i],a])
+                        i += 1
+                return x
+                #return sum(self.times)/len(self.times)
+
 #Do this to start
 #example = turnaroundtime()
 
