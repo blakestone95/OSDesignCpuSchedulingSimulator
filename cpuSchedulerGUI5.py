@@ -20,9 +20,7 @@ class myThread (threading.Thread):
         self.name = name
         self.counter = counter
     def run(self):
-        print ("Starting " + self.name)
         ui.mastercontrol()
-        print ("Exiting " + self.name)
 
 class Ui_CPU_Scheduler(object):
     def setupUi(self, CPU_Scheduler):
@@ -426,9 +424,10 @@ class Ui_CPU_Scheduler(object):
             stringthing += a
             if a == "RR":
                 stringthing += " "+TQ[i]
-            if i != len(algorithms)-1:
+            if i < len(algorithms)-1:
                 stringthing += ","
             i += 1
+        print(stringthing)
         self.usedflag = stringthing
                 
 
@@ -438,14 +437,16 @@ class Ui_CPU_Scheduler(object):
         #for processInputLocation in self.files:
         with open(processInputLocation) as f:
                 datafilereader = csv.reader(f)
-                print("hi")
                 pnum = self.coreCount.value()
                 results = Overlord.Overlord(datafilereader,flag,pnum)
+                if not flag in self.turnaroundresults:
+                    self.turnaroundresults[flag] = []
+                    self.waitresults[flag] = []
+                    self.responseresults[flag] = []
                 self.turnaroundresults[flag].append(results[0])
                 self.waitresults[flag].append(results[1])
                 self.responseresults[flag].append(results[2])
                 self.output()
-                print("hi")
                 
                 #print("Simulation Complete. Results:",results)
 
@@ -458,13 +459,13 @@ class Ui_CPU_Scheduler(object):
         rnames = []
         for element in self.turnaroundresults:
             tnames.append(element)
-            tnum.append(sum(self.turnaroundresults[element]))
+            tnum.append(sum(self.turnaroundresults[element])/len(self.turnaroundresults[element]))
         for element in self.waitresults:
             wnames.append(element)
-            wnum.append(sum(self.waitresults[element]))
+            wnum.append(sum(self.waitresults[element])/len(self.waitresults[element]))
         for element in self.waitresults:
             rnames.append(element)
-            rnum.append(sum(self.responseresults[element]))
+            rnum.append(sum(self.responseresults[element])/len(self.responseresults[element]))
         outputThis = " ,Turnaround Time, Wait Time, Response Time\n"
         i = 0
         for element in tnames:
