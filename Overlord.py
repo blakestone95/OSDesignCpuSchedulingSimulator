@@ -291,7 +291,7 @@ def Overlord(datafilereader):
         
     
 
-processInputLocation = 'C:\\Users\\Blake\\Documents\\GitHub\\SchedulerForDayz\\randomdata.csv'
+processInputLocation = 'C:\\Users\\Blake\\Documents\\GitHub\\SchedulerForDayz\\randomdata2.csv'
 with open(processInputLocation) as f:
         datafilereader = csv.reader(f)
         Overlord(datafilereader)
