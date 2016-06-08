@@ -39,6 +39,8 @@ def Overlord(datafilereader,flag,procnum):
     thruputtime = 0
     currenttime = 0
     parser = flag.split(',')
+    parser.remove(parser[-1])
+    queueslist = parser.copy()
     for t in range(0,len(parser)):
         parser[t] = parser[t].split(' ')
     for t in parser:
@@ -329,11 +331,14 @@ def Overlord(datafilereader,flag,procnum):
     waittime = CollectData.waittime()
     responsetime = CollectData.responsetime()
     turnaroundtime = CollectData.turnaroundtime()
+    throughput = CollectData.throughput()
     for process in masterpt.pcb:
         turnaroundtime.addtime(process.tarr,process.tfinish)
         waittime.addtime(process.twait)
         responsetime.addtime(process.tresp)
-    return [turnaroundtime.totaltime(),waittime.totaltime(),responsetime.totaltime()]
+    for q in queues:
+        throughput.addtime(q.throughput)
+    return [turnaroundtime.totaltime(),waittime.totaltime(),responsetime.totaltime(),throughput.totaltime(queueslist)]
         
         
     

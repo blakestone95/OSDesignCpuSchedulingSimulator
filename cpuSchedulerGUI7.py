@@ -25,6 +25,7 @@ import threading
 
 class Ui_CPU_Scheduler(object):
     def setupUi(self, CPU_Scheduler):
+        self.throughputresults = {}
         self.turnaroundresults = {}
         self.waitresults = {}
         self.responseresults = {}
@@ -385,13 +386,17 @@ class Ui_CPU_Scheduler(object):
                 datafilereader = csv.reader(f)
                 pnum = self.coreCount.value()
                 results = Overlord.Overlord(datafilereader,flag,pnum)
+                print(results)
                 if not flag in self.turnaroundresults:
                     self.turnaroundresults[flag] = []
                     self.waitresults[flag] = []
                     self.responseresults[flag] = []
+                    self.throughputresults[flag] = []
                 self.turnaroundresults[flag].append(results[0])
                 self.waitresults[flag].append(results[1])
                 self.responseresults[flag].append(results[2])
+                self.throughputresults[flag].append(results[3].copy())
+                print(self.throughputresults)
                 self.output()
                 
                 #print("Simulation Complete. Results:",results)
@@ -411,43 +416,59 @@ class Ui_CPU_Scheduler(object):
                 writer = csv.writer(csvfile)
                 for element in self.responseresults:
                     writer.writerow([element,sum(self.responseresults[element])/len(self.responseresults[element])])
+            with open('throughputresults.csv', 'w', newline='') as csvfile:
+                writer = csv.writer(csvfile)
+                for element in self.throughputresults:
+                    writer.writerow([element,sum(self.throughputresults[element])/len(self.throughputresults[element])])
         except:
             print("Error writing to files.")
 
     def output(self):
+        print("a")
         tnum = []
         wnum = []
         rnum = []
+        thnum = []
         tnames = []
         wnames = []
         rnames = []
+        thnames = []
         for element in self.turnaroundresults:
             tnames.append(element)
             tnum.append(sum(self.turnaroundresults[element])/len(self.turnaroundresults[element]))
         for element in self.waitresults:
             wnames.append(element)
             wnum.append(sum(self.waitresults[element])/len(self.waitresults[element]))
-        for element in self.waitresults:
+        for element in self.responseresults:
             rnames.append(element)
             rnum.append(sum(self.responseresults[element])/len(self.responseresults[element]))
+        for element in self.throughputresults:
+            print (element)
+            thnames.append(element)
+            thnum.append(self.throughputresults[element])
 
+        print(thnum)
         output1This = "Turnaround Time\n"
         output2This = "\nWait Time\n"
         output3This = "\nResponse Time\n"
+        output4This = "\nThroughput\n"
         i = 0
         for element in tnames:
             output1This += element + " "
             output2This += element + " "
             output3This += element + " "
+            output4This += element + " "
             output1This += str(tnum[i]) + " "
             output2This += str(wnum[i]) + " "
             output3This += str(rnum[i]) + " "
+            output4This += str(thnum[i]) + " "
             output1This += "\n"
             output2This += "\n"
             output3This += "\n"
+            output4This += "\n"
             i += 1
 
-        self.output1.setText(str(output1This)+str(output2This)+str(output3This))
+        self.output1.setText(str(output1This)+str(output2This)+str(output3This)+str(output4This))
 
 if __name__ == "__main__":
     import sys
