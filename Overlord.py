@@ -60,7 +60,9 @@ def Overlord(datafilereader):
 
     # Get first pid
     incomingpid = masterpt.pid[0]
-    
+    incomingpcb = masterpt.GetPCB(incomingpid)
+
+    thingamajig = 0
 #------------------------------------------------------------------------------#
     while not done == True:
 
@@ -68,29 +70,15 @@ def Overlord(datafilereader):
         if not len(queues[0].pq) == 0:
             for processor in processors:
                 qlevel = 0
-                # Check if preemptive queue needs to run new process
+                # Check if preemptive queue needs halting
                 if processor.state == "running" and queues[processor.currentq].preempt == True:
                     nextpid = queues[processor.currentq].NextPID(processor.pid,processor.processingtime)
-                    '''if (nextpid == -2 and queues[processor.currentq].tq == processor.processingtime):
-                        # If next process indicates that the queue is full,
-                        # halt execution, but give the processor back the same process to do
-                        # Store current queue before halting
-                        procq = processor.currentq
-                        #print("Current queue ",procq)
-                        processinfo = processor.Halt()
-                        
-                        #print("HALT queue full!!!",processinfo)
-                        
-                        # Execute new process
-                        #print("Process ",processinfo[0]," sent to ",processors.index(processor)
-                        #      ," with qlvl ",procq)
-                        #print("Tburst " + str(pcb.tburst))
-                        processor.Execute(processinfo[0],processinfo[1],procq)'''
+                    #print("Next PID on running:",nextpid)
                     if not nextpid == processor.pid or (nextpid == -2 and queues[processor.currentq].tq == processor.processingtime):
                         # If next process is not the same as the current running process,
                         # halt execution
                         # Store current queue before halting
-                        procq = processor.currentq
+                        procq = queues[processor.currentq]
                         #print("Current queue ",procq)
                         processinfo = processor.Halt()
                         
@@ -99,6 +87,12 @@ def Overlord(datafilereader):
                         #print("HALT!!!",processinfo)
                         processpcb.state = 1
                         processpcb.tburst.insert(0,processinfo[1])
+
+                        try:
+                            procq.lastpidindex -= 1
+                            procq.lastpid = procq.index(procq.lastpidindex)
+                        except:
+                            "hi"
                         
                         # Execute new process
                         #nextpcb = masterpt.GetPCB(nextpid)
@@ -107,7 +101,6 @@ def Overlord(datafilereader):
                         #print("Tburst " + str(pcb.tburst))
                         #processor.Execute(nextpid,nextpcb.tburst.pop(0),procq)
                 if processor.state == "idle":
-
                     # Get pid from queue
                     # Choose queue based on a probability distribution
                     probabilities = []
@@ -130,27 +123,31 @@ def Overlord(datafilereader):
                     if type(chosenq) is Algorithms.RR or type(chosenq) is Algorithms.SRT:
                         #print(str(chosenq.lastpid))
                         # Only need running pid and process time if checking if needs replacement
-                        pid = chosenq.NextPID(0,0)
+                        nextpid = chosenq.NextPID(0,0)
                     else:
-                        pid = chosenq.NextPID()
+                        nextpid = chosenq.NextPID()
+                    #print("Next PID on idle:",nextpid)
                         
-                    if pid > 0:
-                        pcb = masterpt.GetPCB(pid)
+                    if nextpid > 0:
+                        nextpcb = masterpt.GetPCB(nextpid)
                         
                         # Give processor a process to do, also remove needed burst time from pcb
                         # Set process to running state
-                        if not pcb.state == 2:
+                        if not nextpcb.state == 2:
 
                             #print("Process " + str(pid) + " sent to " + str(processors.index(processor)) +
                             #      " with qlvl " + str(queues.index(chosenq)))
                             #print("Tburst " + str(pcb.tburst))
-                            
-                            processor.Execute(pid,pcb.tburst.pop(0),queues.index(chosenq))
+
+                            if nextpcb.tresp == -1:
+                                nextpcb.tresp = currenttime
+                            processor.Execute(nextpid,nextpcb.tburst.pop(0),queues.index(chosenq))
                     
 
 #------------------------------------------------------------------------------#
         # Collect all times for comparison
         times = []
+        tnextprocess = 0
         # Get time from now to time of next arriving process
         if not incomingpid is None:
             incomingpcb = masterpt.GetPCB(incomingpid)
@@ -177,7 +174,7 @@ def Overlord(datafilereader):
                             times.append((q.tq - processor.processingtime,
                                           "tq Q"+str(queues.index(q))))
             
-        print("Times:  " + str(times))
+        #print("Times:  " + str(times))
 
         subtime = min(times, key = lambda t: t[0])
         subtime = subtime[0]
@@ -232,7 +229,7 @@ def Overlord(datafilereader):
                     ioqueue.remove(ios)
 
         # Get next incoming process and send to bottom queue
-        if subtime == tnextprocess and not incomingpid is None:
+        if not incomingpid is None and tnextprocess == subtime:
             queues[0].InsertPID(incomingpid)
             incomingpid = masterpt.NextPID(incomingpid)
             
@@ -267,12 +264,31 @@ def Overlord(datafilereader):
             
         # Increment current time
         currenttime += subtime
-        for q in queues:
+        '''for q in queues:
             print("Queue contents: " + str(q.pq))
         for p in processors:
             print("Processor #",processors.index(p),"State:",p.state,"pid:",p.pid,"Queue lvl:",p.currentq,"Time spent processing:",p.processingtime)
-        print("I/O queue ",ioqueue)
-        print("Current time:  " + str(currenttime))
+        print("I/O queue ",ioqueue)'''
+        '''if currenttime > thingamajig:
+            print("Current time:  " + str(currenttime))
+            thingamajig += 100
+            if currenttime > 19000:
+                for q in queues:
+                    print("Queue contents: " + str(q.pq))
+                for p in processors:
+                    print("Processor #",processors.index(p),"State:",p.state,"pid:",p.pid,"Queue lvl:",p.currentq,"Time spent processing:",p.processingtime)
+        '''
+        if subtime == 0:
+            print("Error subtime 0 --ISBROKEEEEEEN--")
+            print("Times:  " + str(times))
+            for q in queues:
+                print("Queue contents: " + str(q.pq))
+            for p in processors:
+                print("Processor #",processors.index(p),"State:",p.state,"pid:",p.pid,"Queue lvl:",p.currentq,"Time spent processing:",p.processingtime)
+            print("I/O queue ",ioqueue)
+            print("Current time:  " + str(currenttime))
+            break
+        
     
 
 processInputLocation = 'C:\\Users\\Blake\\Documents\\GitHub\\SchedulerForDayz\\randomdata.csv'

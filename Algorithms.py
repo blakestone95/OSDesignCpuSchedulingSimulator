@@ -125,24 +125,26 @@ class RR:
         # Get next pid to be run
         # Starting at the most recent pid returned from this, loop until
         # a non-running process is found and return that one
-        # If all processes are running, return None
-        # Set runningpid and runtime to 0 if getting getting next pid for idle cpu
         def NextPID(self,runningpid,runtime):
                 # If the time quantum has not elapsed, return running process sent from cpu
                 if not runningpid == 0 and runtime < self.tq:
                         return runningpid
+                # First time through
+                elif self.lastpid == -1 and not len(self.pq) == 0:
+                        self.lastpid = self.pq[0]
+                        self.lastpidindex = 0
                 else:
-                        if self.lastpid == -1 and not len(self.pq) == 0:
-                                self.lastpid = self.pq[0]
-                                self.lastpidindex = 0
+                                
+                        # Get index of lastpid
                         try:
                                 self.lastpidindex = self.pq.index(self.lastpid)
                         except ValueError:
-                                # Decrement one if last pid was deleted
                                 self.lastpidindex -= 1
+                        # If not at end of list, get next PID
                         if self.lastpidindex < len(self.pq) - 1:
                                 self.lastpid = self.pq[self.lastpidindex + 1]
                                 self.lastpidindex += 1
+                        # Resets PID to first one in the list
                         else:
                                 self.lastpid = self.pq[0]
                                 self.lastpidindex = 0
@@ -155,7 +157,7 @@ class RR:
                                 # Return new lastpid otherwise
                                 return self.lastpid
                 # In case any of the other return statements aren't reached
-                return -1
+                return self.lastpid
 
         # Increment flush time and decide if queue needs to be flushed
         def Flush(self, runtime):
@@ -232,8 +234,7 @@ class SPN:
                                         mintime = pcb.tburst[0]
                                         minpid = pid
                 # Return the pid stored in minpid
-                index = self.pq.index(minpid)
-                return self.pq[index]
+                return minpid
 
         # Increment flush time and decide if queue needs to be flushed
         def Flush(self, runtime):

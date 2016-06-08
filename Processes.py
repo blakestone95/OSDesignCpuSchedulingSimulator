@@ -6,19 +6,17 @@ import csv
 
 # Process Control Block - Store information associated with processes
 class PCB:
-	pid = 1
-	state = 1 # 1 -> ready; 2 -> running; 3 -> blocked; 4 -> finished
-	tarr = 0
-	twait = 0
-	tfinish = 0
-	qlvl = 1 # May remove later
-	tburst = []
 	
 	# Constructor needs only process id and tburst array, other args are optional
-	def __init__(self, processid, timeburst, timearr = None, currstate = None, timewait = None, queuelvl = None):
+	def __init__(self, processid, timeburst, timearr = None, currstate = None, queuelvl = None):
 		
 		self.pid = processid
-		
+		self.tburst = timeburst
+		self.tburstsum = sum(timeburst)
+		self.tresp = -1
+		self.tfinish = 0
+
+		# 1 -> ready; 2 -> running; 3 -> blocked; 4 -> finished
 		if currstate is None:
 			self.state = 1
 		else:
@@ -29,17 +27,11 @@ class PCB:
 		else:
 			self.tarr = timearr
 			
-		if timewait is None:
-			self.twait = 0
-		else:
-			self.twait = timewait
-			
 		if queuelvl is None:
 			self.qlvl = 1
 		else:
 			self.qlvl = queuelvl
 			
-		self.tburst = timeburst
 			
 		
 # Process Table - Store current processes and their associated PCB
