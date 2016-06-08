@@ -416,11 +416,12 @@ class Ui_CPU_Scheduler(object):
         algorithms.append(str(self.algorithm7.currentText()))
         algorithms.append(str(self.algorithm8.currentText()))
 
-        queueslength = self.queues.value()
         queueslength = 8
         for a in algorithms:
             if a == "None":
                 queueslength -= 1
+        if queueslength > self.queues.value():
+            queueslength = self.queues.value()
         stringthing = ""
         i = 0
         for a in algorithms:
@@ -429,10 +430,11 @@ class Ui_CPU_Scheduler(object):
             stringthing += a
             if a == "RR":
                 stringthing += " "+TQ[i]
-            if i < queueslength:
+            if i < queueslength-1:
                 stringthing += ","
+            else:
+                break
             i += 1
-        print(stringthing)
         self.usedflag = stringthing
                 
 
@@ -454,6 +456,20 @@ class Ui_CPU_Scheduler(object):
                 self.output()
                 
                 #print("Simulation Complete. Results:",results)
+
+    def writedata(self):
+        with open('turnaroundresults.csv', 'w', newline='') as csvfile:
+            writer = csv.writer(csvfile)
+            for element in self.turnaroundresults:
+                writer.writerow([element,sum(self.turnaroundresults[element])/len(self.turnaroundresults[element])])
+        with open('waitresults.csv', 'w', newline='') as csvfile:
+            writer = csv.writer(csvfile)
+            for element in self.waitresults:
+                writer.writerow([element,sum(self.waitresults[element])/len(self.waitresults[element])])
+        with open('responseresults.csv', 'w', newline='') as csvfile:
+            writer = csv.writer(csvfile)
+            for element in self.responseresults:
+                writer.writerow([element,sum(self.responseresults[element])/len(self.responseresults[element])])
 
     def output(self):
         print("Done")
@@ -490,9 +506,10 @@ class Ui_CPU_Scheduler(object):
             i += 1
         print("c")
 
-        self.output1.setText(str(output1This))
-        #self.output2.append(str(output2This))
-        #self.output3.append(str(output3This))
+        self.output1.append(str(output1This))
+        self.output2.append(str(output2This))
+        self.output3.append(str(output3This))
+        self.writedata()
 
 import sys
 if __name__ == "__main__":
