@@ -11,6 +11,7 @@ import csv
 from bisect import bisect
 import random
 import math
+import CollectData
 
 # Borrowed from internet (Bobby found it)
 def weighted_choice(choices):
@@ -37,8 +38,8 @@ def Overlord(datafilereader):
     processors = []
     currenttime = 0
     # Hard code algorithms for testing purposes
-    queues.append(Algorithms.RR(masterpt,5))
-    queues.append(Algorithms.RR(masterpt,15))
+    queues.append(Algorithms.RR(masterpt,10))
+    queues.append(Algorithms.RR(masterpt,20))
     queues.append(Algorithms.SPN(masterpt))
     queues.append(Algorithms.FCFS(masterpt))
     # Hard code processors as well
@@ -47,6 +48,7 @@ def Overlord(datafilereader):
     processors.append(Processors.CPU(masterpt))
     processors.append(Processors.CPU(masterpt))
     processors.append(Processors.CPU(masterpt))
+    #
 
 #------------------------------------------------------------------------------#
     # Load processes into Process Table
@@ -65,20 +67,28 @@ def Overlord(datafilereader):
     thingamajig = 0
 #------------------------------------------------------------------------------#
     while not done == True:
-
+        thingamajig2 = []
+        thingamajig3 = []
         # Allocate processes to CPU's and service preemptive queues
-        if not len(queues[0].pq) == 0:
+        t = []
+        for x in queues:
+            t.append(len(x.pq))
+
+        if not sum(t) == 0:
+        #if not len(queues[0].pq) == 0:
+            thingamajig2 = "Hi"
             for processor in processors:
                 qlevel = 0
+                thingamajig3.append(processor.processingtime)
                 # Check if preemptive queue needs halting
                 if processor.state == "running" and queues[processor.currentq].preempt == True:
-                    nextpid = queues[processor.currentq].NextPID(processor.pid,processor.processingtime)
+                    procq = queues[processor.currentq]
+                    nextpid = procq.NextPID(processor.pid,processor.processingtime)
                     #print("Next PID on running:",nextpid)
-                    if not nextpid == processor.pid or (nextpid == -2 and queues[processor.currentq].tq == processor.processingtime):
+                    if not nextpid == processor.pid or nextpid == -2 or procq.tq == processor.processingtime:
                         # If next process is not the same as the current running process,
                         # halt execution
                         # Store current queue before halting
-                        procq = queues[processor.currentq]
                         #print("Current queue ",procq)
                         processinfo = processor.Halt()
                         
@@ -110,14 +120,15 @@ def Overlord(datafilereader):
                         total += len(q.pq)
                     # If no processes are in the queues yet, insert into first queue
                     if not total == 0:
-                        for a in range(1,len(queues)):
+                        for a in range(0,len(queues)):
                             # Set priority such that first queues get higher priority and
                             # priority is also based on # elements in queue
-                            probabilities.append(math.ceil(len(queues[a-1].pq)/total*100/(a*2)))
-                            choices.append((queues[a-1],probabilities[a-1]))
+                            probabilities.append(math.ceil(len(queues[a].pq)/total*100/((a+1)*2)))
+                            choices.append((queues[a],probabilities[a]))
                         chosenq = weighted_choice(choices)
                     else:
                         chosenq = queues[0]
+                    thingamajig2 = "Hi"
 
                     # Get next PID from chosen queue
                     if type(chosenq) is Algorithms.RR or type(chosenq) is Algorithms.SRT:
@@ -278,7 +289,7 @@ def Overlord(datafilereader):
                 for p in processors:
                     print("Processor #",processors.index(p),"State:",p.state,"pid:",p.pid,"Queue lvl:",p.currentq,"Time spent processing:",p.processingtime)
         '''
-        if subtime == 0:
+        '''if subtime == 0:
             print("Error subtime 0 --ISBROKEEEEEEN--")
             print("Times:  " + str(times))
             for q in queues:
@@ -287,11 +298,17 @@ def Overlord(datafilereader):
                 print("Processor #",processors.index(p),"State:",p.state,"pid:",p.pid,"Queue lvl:",p.currentq,"Time spent processing:",p.processingtime)
             print("I/O queue ",ioqueue)
             print("Current time:  " + str(currenttime))
+            print("TQ:",thingamajig2,"PT:",thingamajig3,"Subtime:",subtime)
             break
+        '''
+    '''waittime = CollectData.waittime()
+    responsetime = CollectData.responsetime()
+    turnaroundtime = CollectData.turnaroundtime()
+    for processes in masterpt'''
         
     
 
-processInputLocation = 'C:\\Users\\Blake\\Documents\\GitHub\\SchedulerForDayz\\randomdata2.csv'
+processInputLocation = 'C:\\Users\\Blake\\Documents\\GitHub\\SchedulerForDayz\\randomdata.csv'
 with open(processInputLocation) as f:
         datafilereader = csv.reader(f)
         Overlord(datafilereader)

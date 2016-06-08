@@ -14,8 +14,8 @@ class turnaroundtime:
         def addtime(self,tarr,tfin):
                 self.times.append(tfin - tarr)
 
-        def totaltime(self,length):
-                return sum(self.times)/length
+        def totaltime(self):
+                return sum(self.times)/len(self.times)
 
 #Do this to start
 #example = waittime()
@@ -33,8 +33,8 @@ class waittime:
         def addtime(self,tarr,tfin,tburstsum):
                 self.times.append((tfin - tarr) - tburstsum)
 
-        def totaltime(self,length):
-                return sum(self.times)/length
+        def totaltime(self):
+                return sum(self.times)/len(self.times)
 
 
 #Do this to start
@@ -53,6 +53,6 @@ class responsetime:
         def addtime(self,trep):
                 self.times.append(trep)
 
-        def totaltime(self,length):
-                return sum(self.times)/length
+        def totaltime(self):
+                return sum(self.times)/len(self.times)
 
