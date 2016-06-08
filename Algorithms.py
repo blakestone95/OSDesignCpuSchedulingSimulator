@@ -18,6 +18,7 @@ class FCFS:
                 self.lastpid = -1 # Store the last pid that was returned from NextPID
                 self.lastpidindex = -1
                 self.tflush = 0 # Accumulated time since last flush
+                self.throughput = [0]
 
         # Increment the wait time of a process by "time"
         def IncWaitTime(self,time):
@@ -92,6 +93,11 @@ class FCFS:
                                                 self.lastpidindex -= 1
                                         return tenprocesses
                 return None
+        
+        def addThroughput(self):
+                self.throughput[-1] += 1
+        def throughputadv(self):
+                self.throughput.append(0)       
                                 
 	
 
@@ -111,6 +117,7 @@ class RR:
                 self.lastpid = -1 # Store the last pid that was returned from NextPID
                 self.lastpidindex = -1
                 self.tflush = 0 # Accumulated time since last flush
+                self.throughput = [0]
 
         # Increment the wait time of a process by "time"
         def IncWaitTime(self,time):
@@ -205,6 +212,11 @@ class RR:
                                                 self.lastpidindex -= 1
                                         return tenprocesses
                 return None
+        
+        def addThroughput(self):
+                self.throughput[-1] += 1
+        def throughputadv(self):
+                self.throughput.append(0)       
 		
 # Shortest process next - retrieve item with shortest process time
 class SPN:
@@ -217,6 +229,7 @@ class SPN:
 
                 self.tmax = 1000 # Max time between flushes
                 self.tflush = 0 # Accumulated time since last flush
+                self.throughput = [0]
 
         # Increment the wait time of a process by "time"
         def IncWaitTime(self,time):
@@ -278,6 +291,11 @@ class SPN:
                                                 self.pq.pop(0)
                                         return tenprocesses
                 return None
+        
+        def addThroughput(self):
+                self.throughput[-1] += 1
+        def throughputadv(self):
+                self.throughput.append(0)        
 				
 			
 # Shortest remaining time - retrieve item with shortest process time
@@ -291,6 +309,7 @@ class SRT:
                 self.pq = [] # Process Queue
                 self.tmax = 1000 # Max time between flushes
                 self.tflush = 0 # Accumulated time since last flush
+                self.throughput = [0]
 
         # Increment the wait time of a process by "time"
         def IncWaitTime(self,time):
@@ -353,6 +372,11 @@ class SRT:
                                                 self.pq.pop(0)
                                         return tenprocesses
                 return None
+        
+        def addThroughput(self):
+                self.throughput[-1] += 1
+        def throughputadv(self):
+                self.throughput.append(0)       
 		
 # Highest response ratio next - calculate response ratio for each process and 
 #								choose the one with the highest
@@ -365,6 +389,7 @@ class HRRN:
                 self.pq = [] # Process Queue
                 self.tmax = 1000 # Max time between flushes
                 self.tflush = 0 # Accumulated time since last flush
+                self.throughput = [0]
 
         # Increment the wait time of a process by "time"
         def IncWaitTime(self,time):
@@ -434,3 +459,9 @@ class HRRN:
                                                 self.pq.pop(0)
                                         return tenprocesses
                 return None
+
+        def addThroughput(self):
+                self.throughput[-1] += 1
+        def throughputadv(self):
+                self.throughput.append(0)
+        
