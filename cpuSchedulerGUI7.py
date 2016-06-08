@@ -369,11 +369,11 @@ class Ui_CPU_Scheduler(object):
             stringthing += a
             if a == "RR":
                 stringthing += " "+TQ[i]
-            if i < queueslength-1:
-                stringthing += ","
-            else:
+            stringthing += ","
+            if i >= queueslength-1:
                 break
             i += 1
+        stringthing += "Cores:"+str(self.coreCount.value())
         self.usedflag = stringthing
                 
 

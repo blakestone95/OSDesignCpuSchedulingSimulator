@@ -38,6 +38,7 @@ def Overlord(datafilereader,flag,procnum):
     processors = []
     currenttime = 0
     parser = flag.split(',')
+    parser.remove(parser[len(parser)-1])
     for t in range(0,len(parser)):
         parser[t] = parser[t].split(' ')
     for t in parser:
