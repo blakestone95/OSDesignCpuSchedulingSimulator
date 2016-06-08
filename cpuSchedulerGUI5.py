@@ -11,6 +11,18 @@ import Overlord
 import random
 import math
 import Algorithms
+import threading
+
+class myThread (threading.Thread):
+    def __init__(self, threadID, name, counter):
+        threading.Thread.__init__(self)
+        self.threadID = threadID
+        self.name = name
+        self.counter = counter
+    def run(self):
+        print ("Starting " + self.name)
+        ui.mastercontrol()
+        print ("Exiting " + self.name)
 
 class Ui_CPU_Scheduler(object):
     def setupUi(self, CPU_Scheduler):
@@ -378,7 +390,9 @@ class Ui_CPU_Scheduler(object):
         if not reader in self.files:
             self.files.append(processInputLocation)
             self.getflag()
-            self.mastercontrol()
+            thread1 = myThread(1, "Thread-1", 1)
+            thread1.start()
+            thread1.join()
         #output42 = test.passedVariables(self, reader, coreCount, queueCount, algorithm1, algorithm2, algorithm3, algorithm4, algorithm5, algorithm6, algorithm7, algorithm8, RRTimeQ1, RRTimeQ2, RRTimeQ3, RRTimeQ4, RRTimeQ5, RRTimeQ6, RRTimeQ7, RRTimeQ8)
     def stop_btn_clicked(self):
         self.output1.append("stop clicked")
@@ -425,10 +439,11 @@ class Ui_CPU_Scheduler(object):
         with open(processInputLocation) as f:
                 datafilereader = csv.reader(f)
                 print("hi")
-                results = Overlord(datafilereader,flag,pnum)
-                turnaroundresults[flag].append(results[0])
-                waitresults[flag].append(results[1])
-                responseresults[flag].append(results[2])
+                pnum = self.coreCount.value()
+                results = Overlord.Overlord(datafilereader,flag,pnum)
+                self.turnaroundresults[flag].append(results[0])
+                self.waitresults[flag].append(results[1])
+                self.responseresults[flag].append(results[2])
                 self.output()
                 print("hi")
                 
