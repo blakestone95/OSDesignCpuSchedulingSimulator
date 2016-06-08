@@ -416,6 +416,11 @@ class Ui_CPU_Scheduler(object):
         algorithms.append(str(self.algorithm7.currentText()))
         algorithms.append(str(self.algorithm8.currentText()))
 
+        queueslength = self.queues.value()
+        queueslength = 8
+        for a in algorithms:
+            if a == "None":
+                queueslength -= 1
         stringthing = ""
         i = 0
         for a in algorithms:
@@ -424,7 +429,7 @@ class Ui_CPU_Scheduler(object):
             stringthing += a
             if a == "RR":
                 stringthing += " "+TQ[i]
-            if i < len(algorithms)-1:
+            if i < queueslength:
                 stringthing += ","
             i += 1
         print(stringthing)
@@ -451,6 +456,7 @@ class Ui_CPU_Scheduler(object):
                 #print("Simulation Complete. Results:",results)
 
     def output(self):
+        print("Done")
         tnum = []
         wnum = []
         rnum = []
@@ -466,17 +472,27 @@ class Ui_CPU_Scheduler(object):
         for element in self.waitresults:
             rnames.append(element)
             rnum.append(sum(self.responseresults[element])/len(self.responseresults[element]))
-        outputThis = " ,Turnaround Time, Wait Time, Response Time\n"
+
+        output1This = "Turnaround Time\n"
+        output2This = "Wait Time\n"
+        output3This = "Response Time\n"
         i = 0
         for element in tnames:
-            outputThis += element + " "
-            outputThis += str(tnum[i]) + " "
-            outputThis += str(wnum[i]) + " "
-            outputThis += str(rnum[i]) + " "
-            outputThis += "\n"
+            output1This += element + " "
+            output2This += element + " "
+            output3This += element + " "
+            output1This += str(tnum[i]) + " "
+            output2This += str(wnum[i]) + " "
+            output3This += str(rnum[i]) + " "
+            output1This += "\n"
+            output2This += "\n"
+            output3This += "\n"
             i += 1
-        
-        self.output1.append(str(outputThis))
+        print("c")
+
+        self.output1.setText(str(output1This))
+        #self.output2.append(str(output2This))
+        #self.output3.append(str(output3This))
 
 import sys
 if __name__ == "__main__":
